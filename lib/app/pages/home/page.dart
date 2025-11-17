@@ -91,18 +91,13 @@ class _HomeMenuGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final menus = [
       _HomeMenuItem(
-        title: '자산번호 조회',
-        description: '자산을 검색하고, 상태를 확인, 변경할 수 있어요.',
+        title: '자산 조회',
+        description: '자산을 검색하고, 상태를 변경할 수 있어요.',
         onTap: () => Get.toNamed(Routes.ASSET_LOOKUP),
       ),
       _HomeMenuItem(
         title: '일괄 변경',
         description: '바코드로 상태를 한 번에 변경할 수 있어요.',
-        onTap: () {},
-      ),
-      _HomeMenuItem(
-        title: '자산 추가',
-        description: '새로운 자산을 추가할 수 있어요.',
         onTap: () {},
       ),
     ];

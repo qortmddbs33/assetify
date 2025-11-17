@@ -1,3 +1,4 @@
+import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,6 +9,36 @@ import 'controller.dart';
 
 class AssetLookupPage extends GetView<AssetLookupController> {
   const AssetLookupPage({super.key});
+
+  Future<void> _openBarcodeScanner(BuildContext context) async {
+    var hasResult = false;
+    final scannedValue = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (scannerContext) => AiBarcodeScanner(
+          appBarBuilder: (context, controller) =>
+              AppBar(title: const Text('바코드 스캔')),
+          onDetect: (capture) {
+            if (hasResult || capture.barcodes.isEmpty) {
+              return;
+            }
+            final rawValue = capture.barcodes.first.rawValue;
+            if (rawValue == null || rawValue.isEmpty) {
+              return;
+            }
+            hasResult = true;
+            Navigator.of(scannerContext).pop(rawValue);
+          },
+        ),
+      ),
+    );
+
+    if (scannedValue == null || scannedValue.isEmpty) {
+      return;
+    }
+
+    controller.assetNumberController.text = scannedValue;
+    await controller.searchAsset();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +73,11 @@ class AssetLookupPage extends GetView<AssetLookupController> {
               decoration: InputDecoration(
                 labelText: '자산번호',
                 hintText: '예: 2309-N0001',
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.qr_code_scanner_rounded),
+                  tooltip: '바코드로 입력',
+                  onPressed: () => _openBarcodeScanner(context),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(CustomRadius.radius600),
                 ),
