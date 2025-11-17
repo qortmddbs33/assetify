@@ -41,7 +41,7 @@ class HomePage extends GetView<HomePageController> {
               ),
               const SizedBox(height: CustomSpacing.spacing200),
               Text(
-                '사내 자산 현황을 한눈에 확인하고\nNotion 기반 데이터를 안전하게 관리하세요.',
+                '사내 자산 정보을 간편하게 확인하고\nNotion 기반 데이터를 편리하게 관리하세요.',
                 style: textTheme.body.copyWith(
                   color: colorTheme.contentStandardSecondary,
                 ),
@@ -91,18 +91,18 @@ class _HomeMenuGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final menus = [
       _HomeMenuItem(
-        title: '자산 현황',
+        title: '자산번호 조회',
         description: '자산을 검색하고, 상태를 확인, 변경할 수 있어요.',
-        onTap: () => Get.toNamed(Routes.ASSET_OVERVIEW),
-      ),
-      _HomeMenuItem(
-        title: '바코드 조회',
-        description: '바코드를 스캔해 자산 정보를 찾을 수 있어요.',
-        onTap: () {},
+        onTap: () => Get.toNamed(Routes.ASSET_LOOKUP),
       ),
       _HomeMenuItem(
         title: '일괄 변경',
         description: '바코드로 상태를 한 번에 변경할 수 있어요.',
+        onTap: () {},
+      ),
+      _HomeMenuItem(
+        title: '자산 추가',
+        description: '새로운 자산을 추가할 수 있어요.',
         onTap: () {},
       ),
     ];

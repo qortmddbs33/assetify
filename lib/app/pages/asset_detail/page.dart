@@ -20,8 +20,9 @@ class AssetDetailPage extends GetView<AssetDetailController> {
       appBar: AppBar(
         title: Text(
           props.assetNumber.isEmpty ? '자산 상세' : props.assetNumber,
-          style:
-              textTheme.heading.copyWith(color: colorTheme.contentStandardPrimary),
+          style: textTheme.heading.copyWith(
+            color: colorTheme.contentStandardPrimary,
+          ),
         ),
         centerTitle: false,
       ),

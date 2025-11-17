@@ -5,21 +5,21 @@ import 'package:get/get.dart';
 import 'model.dart';
 import 'repository.dart';
 
-class NotionService extends GetxController with StateMixin<List<NotionPage>?> {
+class NotionService extends GetxController {
   final NotionRepository repository;
 
   NotionService({NotionRepository? repository})
-    : repository = repository ?? NotionRepository();
+      : repository = repository ?? NotionRepository();
 
-  final Rx<List<NotionPage>?> _items = Rx(null);
-
-  List<NotionPage>? get items => _items.value;
-
-  Future<List<NotionPage>?> loadItems() async {
+  Future<NotionPage?> fetchAssetByNumber(String assetNumber) async {
     try {
-      NotionDatabase data = await repository.fetchNotionItems();
-      _items.value = data.results;
-      return _items.value;
+      final NotionDatabase data = await repository.fetchNotionItems(
+        assetNumber: assetNumber,
+      );
+      if (data.results.isNotEmpty) {
+        return data.results.first;
+      }
+      return null;
     } catch (e) {
       log(e.toString());
       return null;

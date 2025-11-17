@@ -4,8 +4,8 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
 import '../pages/asset_detail/binding.dart';
 import '../pages/asset_detail/page.dart';
-import '../pages/asset_overview/binding.dart';
-import '../pages/asset_overview/page.dart';
+import '../pages/asset_lookup/binding.dart';
+import '../pages/asset_lookup/page.dart';
 import '../pages/home/binding.dart';
 import '../pages/home/page.dart';
 import '../pages/test/binding.dart';
@@ -32,9 +32,9 @@ class AppPages {
       transition: Transition.cupertino,
     ),
     GetPage(
-      name: Routes.ASSET_OVERVIEW,
-      page: () => const AssetOverviewPage(),
-      binding: AssetOverviewBinding(),
+      name: Routes.ASSET_LOOKUP,
+      page: () => const AssetLookupPage(),
+      binding: AssetLookupBinding(),
       transition: Transition.cupertino,
     ),
     GetPage(

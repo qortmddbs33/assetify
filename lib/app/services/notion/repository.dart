@@ -9,13 +9,22 @@ class NotionRepository {
 
   NotionRepository({ApiProvider? api}) : api = api ?? Get.find<ApiProvider>();
 
-  Future<NotionDatabase> fetchNotionItems() async {
-    String url = '/query';
+  Future<NotionDatabase> fetchNotionItems({
+    String? assetNumber,
+  }) async {
+    const String url = '/query';
 
-    CustomHttpResponse response = await api.post(url);
+    final Map<String, dynamic> payload = {};
+    if (assetNumber != null && assetNumber.isNotEmpty) {
+      payload['filter'] = {
+        'property': '자산번호',
+        'rich_text': {'equals': assetNumber},
+      };
+    }
 
-    NotionDatabase db = NotionDatabase.fromJson(response.data);
+    CustomHttpResponse response =
+        await api.post(url, data: payload.isEmpty ? null : payload);
 
-    return db;
+    return NotionDatabase.fromJson(response.data);
   }
 }
