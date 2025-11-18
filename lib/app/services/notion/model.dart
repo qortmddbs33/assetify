@@ -20,13 +20,36 @@ class NotionDatabase {
 class NotionPage {
   final String id;
   final NotionProperties properties;
+  final Map<String, NotionPropertyField> propertyFields;
+  final String? parentDatabaseId;
 
-  NotionPage({required this.id, required this.properties});
+  NotionPage({
+    required this.id,
+    required this.properties,
+    required this.propertyFields,
+    required this.parentDatabaseId,
+  });
 
   factory NotionPage.fromJson(Map<String, dynamic> json) =>
       _$NotionPageFromJson(json);
 
   Map<String, dynamic> toJson() => _$NotionPageToJson(this);
+
+  NotionPropertyField? field(String propertyName) {
+    final direct = propertyFields[propertyName];
+    if (direct != null) return direct;
+
+    final normalized = _normalizePropertyName(propertyName);
+    for (final entry in propertyFields.entries) {
+      if (_normalizePropertyName(entry.key) == normalized) {
+        return entry.value;
+      }
+    }
+    return null;
+  }
+
+  String _normalizePropertyName(String value) =>
+      value.replaceAll(RegExp(r'\s+'), '');
 }
 
 class NotionProperties {
@@ -153,4 +176,168 @@ class NotionProperties {
     '수리 작업 유형': repairWorkTypes,
     '부서': department,
   };
+}
+
+class NotionPropertyField {
+  final String name;
+  final String type;
+  final Map<String, dynamic> data;
+
+  const NotionPropertyField({
+    required this.name,
+    required this.type,
+    required this.data,
+  });
+
+  factory NotionPropertyField.fromJson(
+    String propertyName,
+    Map<String, dynamic> json,
+  ) {
+    return NotionPropertyField(
+      name: propertyName,
+      type: json['type'] as String? ?? '',
+      data: Map<String, dynamic>.from(json),
+    );
+  }
+
+  static Map<String, NotionPropertyField> mapFromJson(
+    Map<String, dynamic>? source,
+  ) {
+    if (source == null) return {};
+    return source.map((key, value) {
+      if (value is Map<String, dynamic>) {
+        return MapEntry(key, NotionPropertyField.fromJson(key, value));
+      }
+      if (value is Map) {
+        return MapEntry(
+          key,
+          NotionPropertyField.fromJson(key, Map<String, dynamic>.from(value)),
+        );
+      }
+      return MapEntry(
+        key,
+        NotionPropertyField(
+          name: key,
+          type: '',
+          data: {'type': '', 'value': value},
+        ),
+      );
+    });
+  }
+
+  static Map<String, dynamic> mapToJson(
+    Map<String, NotionPropertyField> fields,
+  ) {
+    return fields.map((key, value) => MapEntry(key, value.toJson()));
+  }
+
+  Map<String, dynamic> toJson() => data;
+
+  bool get isEditable => _editableTypes.contains(type);
+
+  static const Set<String> _editableTypes = {
+    'title',
+    'rich_text',
+    'number',
+    'select',
+    'status',
+    'multi_select',
+    'date',
+    'phone_number',
+    'email',
+    'url',
+    'checkbox',
+  };
+
+  String get inputHint {
+    switch (type) {
+      case 'multi_select':
+        return '여러 값을 쉼표(,)로 구분해 입력하세요.';
+      case 'date':
+        return 'YYYY-MM-DD 또는 "시작 ~ 종료" 형태로 입력하세요.';
+      case 'number':
+        return '숫자만 입력 가능합니다.';
+      case 'checkbox':
+        return 'true / false 중 하나를 입력하세요.';
+      default:
+        return '';
+    }
+  }
+}
+
+class NotionPropertyDefinition {
+  final String name;
+  final String type;
+  final List<NotionPropertyOption> options;
+
+  const NotionPropertyDefinition({
+    required this.name,
+    required this.type,
+    required this.options,
+  });
+
+  factory NotionPropertyDefinition.fromJson(
+    String propertyName,
+    Map<String, dynamic> json,
+  ) {
+    final String type = json['type'] as String? ?? '';
+    final List<NotionPropertyOption> options =
+        NotionPropertyOption.listFromPropertyJson(json);
+    return NotionPropertyDefinition(
+      name: propertyName,
+      type: type,
+      options: options,
+    );
+  }
+
+  static Map<String, NotionPropertyDefinition> mapFromDatabase(
+      Map<String, dynamic>? json) {
+    if (json == null) return {};
+    final Map<String, NotionPropertyDefinition> result = {};
+    json.forEach((key, value) {
+      if (value is Map<String, dynamic>) {
+        result[key] = NotionPropertyDefinition.fromJson(key, value);
+      } else if (value is Map) {
+        result[key] =
+            NotionPropertyDefinition.fromJson(key, Map<String, dynamic>.from(value));
+      }
+    });
+    return result;
+  }
+
+  String get normalizedName => name.replaceAll(RegExp(r'\s+'), '');
+}
+
+class NotionPropertyOption {
+  final String id;
+  final String name;
+  final String color;
+
+  const NotionPropertyOption({
+    required this.id,
+    required this.name,
+    required this.color,
+  });
+
+  static List<NotionPropertyOption> listFromPropertyJson(
+      Map<String, dynamic>? json) {
+    if (json == null) return const <NotionPropertyOption>[];
+    final String? type = json['type'] as String?;
+    final dynamic typeData = json[type];
+    if (typeData is! Map<String, dynamic>) return const <NotionPropertyOption>[];
+    final dynamic options = typeData['options'];
+    if (options is! List) return const <NotionPropertyOption>[];
+    return options
+        .whereType<Map>()
+        .map((option) {
+          final map = Map<String, dynamic>.from(option as Map);
+          return NotionPropertyOption(
+            id: map['id']?.toString() ?? '',
+            name: map['name']?.toString() ?? '',
+            color: map['color']?.toString() ?? 'default',
+          );
+        })
+        .where((option) => option.name.isNotEmpty)
+        .toList();
+  }
 }

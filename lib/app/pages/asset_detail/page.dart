@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../core/theme/colors.dart';
@@ -14,96 +15,550 @@ class AssetDetailPage extends GetView<AssetDetailController> {
   Widget build(BuildContext context) {
     final colorTheme = Theme.of(context).extension<CustomColors>()!;
     final textTheme = Theme.of(context).extension<CustomTypography>()!;
-    final NotionProperties props = controller.page.properties;
+    return Obx(() {
+      final NotionProperties props = controller.properties;
+      final bool isUpdating = controller.isUpdating.value;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          props.assetNumber.isEmpty ? '자산 상세' : props.assetNumber,
-          style: textTheme.heading.copyWith(
-            color: colorTheme.contentStandardPrimary,
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            props.assetNumber.isEmpty ? '자산 상세' : props.assetNumber,
+            style: textTheme.heading.copyWith(
+              color: colorTheme.contentStandardPrimary,
+            ),
           ),
+          centerTitle: false,
         ),
-        centerTitle: false,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(CustomSpacing.spacing550),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        body: Column(
           children: [
-            _AssetDetailSummary(
-              props: props,
-              colorTheme: colorTheme,
-              textTheme: textTheme,
-            ),
-            const SizedBox(height: CustomSpacing.spacing500),
-            _AssetDetailSection(
-              title: '기본 정보',
-              rows: [
-                _DetailRow('모델명', props.modelName),
-                _DetailRow('법인명', props.corporation),
-                _DetailRow('부서', props.department),
-                _DetailRow('위치', props.location),
-              ],
-              colorTheme: colorTheme,
-              textTheme: textTheme,
-            ),
-            const SizedBox(height: CustomSpacing.spacing500),
-            _AssetDetailSection(
-              title: '하드웨어 및 식별',
-              rows: [
-                _DetailRow('시리얼 넘버', props.serialNumber),
-                _DetailRow('누락 사항', props.missingItems),
-              ],
-              colorTheme: colorTheme,
-              textTheme: textTheme,
-            ),
-            const SizedBox(height: CustomSpacing.spacing500),
-            _AssetDetailSection(
-              title: '일정 · 비용',
-              rows: [
-                _DetailRow('사용일자', props.usageDate),
-                _DetailRow('구매일자', props.purchaseDate),
-                _DetailRow('반납일자', props.returnDate),
-                _DetailRow('수리일자', props.repairDate),
-                _DetailRow('단가', props.unitPrice),
-                _DetailRow('잔존가치', props.residualValue),
-              ],
-              colorTheme: colorTheme,
-              textTheme: textTheme,
-            ),
-            const SizedBox(height: CustomSpacing.spacing500),
-            _AssetDetailSection(
-              title: '진행 상황',
-              rows: [
-                _DetailRow('사용/재고/폐기/기타', props.status),
-                _DetailRow('출고 진행 상황', props.shipmentStatus),
-                _DetailRow('수리 진행 상황', props.repairStatus),
-                _DetailRow('반납 진행 상황', props.returnProgress),
-                _DetailRow('수리 작업 유형', props.repairWorkTypes),
-                _DetailRow('수리 담당자', props.repairManager),
-              ],
-              colorTheme: colorTheme,
-              textTheme: textTheme,
-            ),
-            const SizedBox(height: CustomSpacing.spacing500),
-            _AssetDetailSection(
-              title: '기타',
-              rows: [
-                _DetailRow('반납 사유', props.returnReason),
-                _DetailRow('메모', props.note),
-                _DetailRow('파일 첨부', props.attachments),
-                _DetailRow('업데이트 시간', props.updatedTime),
-                _DetailRow('최종 편집자', props.editor),
-              ],
-              colorTheme: colorTheme,
-              textTheme: textTheme,
+            if (isUpdating) const LinearProgressIndicator(minHeight: 2),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: controller.refreshPage,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(CustomSpacing.spacing550),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _AssetDetailSummary(
+                        props: props,
+                        colorTheme: colorTheme,
+                        textTheme: textTheme,
+                      ),
+                      const SizedBox(height: CustomSpacing.spacing500),
+                      _AssetDetailSection(
+                        title: '기본 정보',
+                        rows: [
+                          _DetailRow('사용자', props.user),
+                          _DetailRow('법인명', props.corporation),
+                          _DetailRow('부서', props.department),
+                          _DetailRow('위치', props.location),
+                        ],
+                        colorTheme: colorTheme,
+                        textTheme: textTheme,
+                        controller: controller,
+                        isUpdating: isUpdating,
+                        onEdit: (row) => _showEditPropertyDialog(context, row),
+                      ),
+                      const SizedBox(height: CustomSpacing.spacing500),
+                      _AssetDetailSection(
+                        title: '하드웨어 · 스펙',
+                        rows: [
+                          _DetailRow('제조사', props.manufacturer),
+                          _DetailRow('모델명', props.modelName),
+                          _DetailRow('CPU', props.CPU),
+                          _DetailRow('RAM', props.RAM),
+                          _DetailRow('시리얼 넘버', props.serialNumber),
+                        ],
+                        colorTheme: colorTheme,
+                        textTheme: textTheme,
+                        controller: controller,
+                        isUpdating: isUpdating,
+                        onEdit: (row) => _showEditPropertyDialog(context, row),
+                      ),
+                      const SizedBox(height: CustomSpacing.spacing500),
+                      _AssetDetailSection(
+                        title: '일정 · 이력',
+                        rows: [
+                          _DetailRow('구매일자', props.purchaseDate),
+                          _DetailRow('사용일자', props.usageDate),
+                          _DetailRow('반납일자', props.returnDate),
+                          _DetailRow('수리일자', props.repairDate),
+                        ],
+                        colorTheme: colorTheme,
+                        textTheme: textTheme,
+                        controller: controller,
+                        isUpdating: isUpdating,
+                        onEdit: (row) => _showEditPropertyDialog(context, row),
+                      ),
+                      const SizedBox(height: CustomSpacing.spacing500),
+                      _AssetDetailSection(
+                        title: '비용 정보',
+                        rows: [
+                          _DetailRow('단가', props.unitPrice),
+                          _DetailRow('잔존가치', props.residualValue),
+                        ],
+                        colorTheme: colorTheme,
+                        textTheme: textTheme,
+                        controller: controller,
+                        isUpdating: isUpdating,
+                        onEdit: (row) => _showEditPropertyDialog(context, row),
+                      ),
+                      const SizedBox(height: CustomSpacing.spacing500),
+                      _AssetDetailSection(
+                        title: '진행 상태',
+                        rows: [
+                          _DetailRow(
+                            '자산 상태',
+                            props.status,
+                            propertyName: '사용/재고/폐기/기타',
+                          ),
+                          _DetailRow(
+                            '출고 진행 상황',
+                            props.shipmentStatus,
+                            propertyName: '출고진행상황',
+                          ),
+                          _DetailRow(
+                            '수리 진행 상황',
+                            props.repairStatus,
+                            propertyName: '수리진행상황',
+                          ),
+                          _DetailRow('반납 진행 상황', props.returnProgress),
+                        ],
+                        colorTheme: colorTheme,
+                        textTheme: textTheme,
+                        controller: controller,
+                        isUpdating: isUpdating,
+                        onEdit: (row) => _showEditPropertyDialog(context, row),
+                      ),
+                      const SizedBox(height: CustomSpacing.spacing500),
+                      _AssetDetailSection(
+                        title: '수리 · 반납 관리',
+                        rows: [
+                          _DetailRow('수리 작업 유형', props.repairWorkTypes),
+                          _DetailRow(
+                            '수리 담당자',
+                            props.repairManager,
+                          ),
+                          _DetailRow(
+                            '반납 사유',
+                            props.returnReason,
+                            propertyName: '반납사유',
+                          ),
+                        ],
+                        colorTheme: colorTheme,
+                        textTheme: textTheme,
+                        controller: controller,
+                        isUpdating: isUpdating,
+                        onEdit: (row) => _showEditPropertyDialog(context, row),
+                      ),
+                      const SizedBox(height: CustomSpacing.spacing500),
+                      _AssetDetailSection(
+                        title: '기타',
+                        rows: [
+                          _DetailRow('메모', props.note, propertyName: '기타'),
+                          _DetailRow('파일 첨부', props.attachments),
+                          _DetailRow('업데이트 시간', props.updatedTime),
+                          _DetailRow('최종 편집자', props.editor),
+                          _DetailRow('누락 사항', props.missingItems),
+                        ],
+                        colorTheme: colorTheme,
+                        textTheme: textTheme,
+                        controller: controller,
+                        isUpdating: isUpdating,
+                        onEdit: (row) => _showEditPropertyDialog(context, row),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         ),
-      ),
-    );
+      );
+    });
   }
+
+  Future<void> _showEditPropertyDialog(
+    BuildContext context,
+    _DetailRow row,
+  ) async {
+    final NotionPropertyField? field = controller.propertyField(
+      row.propertyName,
+    );
+    if (field == null || !field.isEditable) return;
+
+    if (field.type == 'date') {
+      await _showDateEditDialog(context, row);
+      return;
+    }
+
+    if (field.type == 'select' || field.type == 'status') {
+      final handled = await _showSingleSelectSheet(context, row);
+      if (handled) return;
+    }
+
+    if (field.type == 'multi_select') {
+      final handled = await _showMultiSelectDialog(context, row);
+      if (handled) return;
+    }
+
+    await _showTextEditDialog(context, row, field);
+  }
+
+  Future<void> _showTextEditDialog(
+    BuildContext context,
+    _DetailRow row,
+    NotionPropertyField field,
+  ) async {
+    final String hint = field.inputHint;
+    final textController = TextEditingController(text: row.value);
+
+    final TextInputType keyboardType;
+    List<TextInputFormatter>? inputFormatters;
+    switch (field.type) {
+      case 'number':
+        keyboardType = const TextInputType.numberWithOptions(
+          decimal: true,
+          signed: true,
+        );
+        inputFormatters = [
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9.\-]')),
+        ];
+        break;
+      case 'phone_number':
+        keyboardType = TextInputType.phone;
+        break;
+      case 'email':
+        keyboardType = TextInputType.emailAddress;
+        break;
+      case 'url':
+        keyboardType = TextInputType.url;
+        break;
+      default:
+        keyboardType = TextInputType.text;
+    }
+
+    final String? updatedValue = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('${row.label} 수정'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: textController,
+                maxLines: field.type == 'rich_text' ? 5 : 1,
+                minLines: field.type == 'rich_text' ? 3 : 1,
+                keyboardType: keyboardType,
+                inputFormatters: inputFormatters,
+                decoration: InputDecoration(
+                  hintText: hint.isEmpty ? null : hint,
+                ),
+              ),
+              if (hint.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: CustomSpacing.spacing200),
+                  child: Text(
+                    hint,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.color
+                              ?.withOpacity(0.7),
+                        ),
+                  ),
+                ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('취소'),
+            ),
+            ElevatedButton(
+              onPressed: () =>
+                  Navigator.of(context).pop(textController.text.trim()),
+              child: const Text('저장'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (updatedValue == null) return;
+
+    await _submitUpdate(context, row.propertyName, updatedValue);
+  }
+
+  Future<bool> _showSingleSelectSheet(
+    BuildContext context,
+    _DetailRow row,
+  ) async {
+    final List<NotionPropertyOption> options =
+        await controller.fetchPropertyOptions(row.propertyName);
+    if (options.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('선택 가능한 항목이 없습니다.')),
+      );
+      return false;
+    }
+
+    final String? selected = await showModalBottomSheet<String>(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('선택 해제'),
+                onTap: () => Navigator.of(context).pop(''),
+              ),
+              ...options.map(
+                (option) => ListTile(
+                  title: Text(option.name),
+                  trailing: row.value.trim() == option.name
+                      ? const Icon(Icons.check)
+                      : null,
+                  onTap: () => Navigator.of(context).pop(option.name),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (selected == null) return true;
+
+    await _submitUpdate(context, row.propertyName, selected);
+    return true;
+  }
+
+  Future<bool> _showMultiSelectDialog(
+    BuildContext context,
+    _DetailRow row,
+  ) async {
+    final List<NotionPropertyOption> options =
+        await controller.fetchPropertyOptions(row.propertyName);
+    if (options.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('선택 가능한 항목이 없습니다.')),
+      );
+      return false;
+    }
+
+    final Set<String> initialSelections = row.value
+        .split(',')
+        .map((e) => e.trim())
+        .where((element) => element.isNotEmpty)
+        .toSet();
+
+    final Set<String>? result = await showDialog<Set<String>>(
+      context: context,
+      builder: (context) {
+        final Set<String> selections = {...initialSelections};
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('${row.label} 수정'),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: options
+                        .map(
+                          (option) => CheckboxListTile(
+                            value: selections.contains(option.name),
+                            onChanged: (checked) {
+                              setState(() {
+                                if (checked == true) {
+                                  selections.add(option.name);
+                                } else {
+                                  selections.remove(option.name);
+                                }
+                              });
+                            },
+                            title: Text(option.name),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('취소'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(<String>{}),
+                  child: const Text('지우기'),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(selections),
+                  child: const Text('저장'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (result == null) return true;
+
+    final String value = result.isEmpty ? '' : result.join(', ');
+    await _submitUpdate(context, row.propertyName, value);
+    return true;
+  }
+
+  Future<void> _showDateEditDialog(BuildContext context, _DetailRow row) async {
+    final _DateDialogResult? result = await showDialog<_DateDialogResult>(
+      context: context,
+      builder: (context) {
+        DateTimeRange? selectedRange = _parseDateRange(row.value);
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('${row.label} 수정'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    selectedRange == null
+                        ? '선택된 날짜 없음'
+                        : _formatDateRange(selectedRange!),
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: CustomSpacing.spacing200),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () async {
+                        final DateTime now = DateTime.now();
+                        final DateTimeRange initialRange =
+                            selectedRange ??
+                            DateTimeRange(start: now, end: now);
+                        final DateTimeRange? picked = await showDateRangePicker(
+                          context: context,
+                          initialDateRange: initialRange,
+                          firstDate: DateTime(2000, 1, 1),
+                          lastDate: DateTime(2100, 12, 31),
+                        );
+                        if (picked != null) {
+                          setState(() {
+                            selectedRange = picked;
+                          });
+                        }
+                      },
+                      icon: const Icon(Icons.calendar_today_outlined),
+                      label: const Text('날짜 선택'),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('취소'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(
+                    context,
+                  ).pop(const _DateDialogResult(clear: true)),
+                  child: const Text('지우기'),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(
+                    context,
+                  ).pop(_DateDialogResult(clear: false, range: selectedRange)),
+                  child: const Text('저장'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (result == null) return;
+
+    String newValue;
+    if (result.clear) {
+      newValue = '';
+    } else {
+      final DateTimeRange? range = result.range;
+      if (range == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('날짜를 선택해주세요.')),
+        );
+        return;
+      }
+      newValue = _formatDateRange(range);
+    }
+
+    await _submitUpdate(context, row.propertyName, newValue);
+  }
+
+  DateTimeRange? _parseDateRange(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return null;
+    final parts = trimmed.split('~');
+    DateTime? start = DateTime.tryParse(parts.first.trim());
+    DateTime? end;
+    if (parts.length > 1) {
+      end = DateTime.tryParse(parts[1].trim());
+    }
+    end ??= start;
+    if (start == null || end == null) return null;
+    if (end.isBefore(start)) {
+      final DateTime temp = start;
+      start = end;
+      end = temp;
+    }
+    return DateTimeRange(start: start, end: end);
+  }
+
+  String _formatDateRange(DateTimeRange range) {
+    final String start = _formatDate(range.start);
+    final String end = _formatDate(range.end);
+    if (start == end) return start;
+    return '$start ~ $end';
+  }
+
+  String _formatDate(DateTime date) {
+    final String year = date.year.toString().padLeft(4, '0');
+    final String month = date.month.toString().padLeft(2, '0');
+    final String day = date.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
+  }
+
+  Future<void> _submitUpdate(
+    BuildContext context,
+    String propertyName,
+    String value,
+  ) async {
+    final bool success =
+        await controller.updateProperty(propertyName, value);
+    final messenger = ScaffoldMessenger.of(context);
+    final String message = success ? '수정되었습니다.' : '수정에 실패했습니다.';
+    messenger.showSnackBar(SnackBar(content: Text(message)));
+  }
+}
+
+class _DateDialogResult {
+  final bool clear;
+  final DateTimeRange? range;
+
+  const _DateDialogResult({required this.clear, this.range});
 }
 
 class _AssetDetailSummary extends StatelessWidget {
@@ -151,7 +606,7 @@ class _AssetDetailSummary extends StatelessWidget {
                   borderRadius: BorderRadius.circular(CustomRadius.radius500),
                 ),
                 child: Text(
-                  props.status,
+                  props.status.isEmpty ? '-' : props.status,
                   style: textTheme.footnote.copyWith(color: statusColor),
                 ),
               ),
@@ -250,12 +705,18 @@ class _AssetDetailSection extends StatelessWidget {
   final List<_DetailRow> rows;
   final CustomColors colorTheme;
   final CustomTypography textTheme;
+  final AssetDetailController controller;
+  final bool isUpdating;
+  final void Function(_DetailRow row) onEdit;
 
   const _AssetDetailSection({
     required this.title,
     required this.rows,
     required this.colorTheme,
     required this.textTheme,
+    required this.controller,
+    required this.isUpdating,
+    required this.onEdit,
   });
 
   @override
@@ -278,17 +739,20 @@ class _AssetDetailSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: CustomSpacing.spacing400),
-          ...rows.map(
-            (row) => Padding(
+          ...rows.map((row) {
+            final bool editable = controller.canEdit(row.propertyName);
+            return Padding(
               padding: const EdgeInsets.only(bottom: CustomSpacing.spacing300),
               child: _DetailItem(
-                label: row.label,
-                value: row.value,
+                row: row,
                 textTheme: textTheme,
                 colorTheme: colorTheme,
+                editable: editable,
+                isUpdating: isUpdating,
+                onEdit: editable ? () => onEdit(row) : null,
               ),
-            ),
-          ),
+            );
+          }),
         ],
       ),
     );
@@ -298,21 +762,27 @@ class _AssetDetailSection extends StatelessWidget {
 class _DetailRow {
   final String label;
   final String value;
+  final String propertyName;
 
-  const _DetailRow(this.label, this.value);
+  const _DetailRow(this.label, this.value, {String? propertyName})
+    : propertyName = propertyName ?? label;
 }
 
 class _DetailItem extends StatelessWidget {
-  final String label;
-  final String value;
+  final _DetailRow row;
   final CustomTypography textTheme;
   final CustomColors colorTheme;
+  final bool editable;
+  final bool isUpdating;
+  final VoidCallback? onEdit;
 
   const _DetailItem({
-    required this.label,
-    required this.value,
+    required this.row,
     required this.textTheme,
     required this.colorTheme,
+    required this.editable,
+    required this.isUpdating,
+    required this.onEdit,
   });
 
   @override
@@ -321,17 +791,31 @@ class _DetailItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          row.label,
           style: textTheme.label.copyWith(
             color: colorTheme.contentStandardTertiary,
           ),
         ),
         const SizedBox(height: CustomSpacing.spacing100),
-        Text(
-          value.isEmpty ? '-' : value,
-          style: textTheme.body.copyWith(
-            color: colorTheme.contentStandardPrimary,
-          ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                row.value.isEmpty ? '-' : row.value,
+                style: textTheme.body.copyWith(
+                  color: colorTheme.contentStandardPrimary,
+                ),
+              ),
+            ),
+            if (editable)
+              IconButton(
+                icon: const Icon(Icons.edit_outlined, size: 20),
+                color: colorTheme.contentStandardSecondary,
+                onPressed: isUpdating ? null : onEdit,
+                tooltip: '${row.label} 수정',
+              ),
+          ],
         ),
       ],
     );
