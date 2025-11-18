@@ -140,6 +140,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                           _DetailRow(
                             '수리 담당자',
                             props.repairManager,
+                            propertyName: '수리담당자',
                           ),
                           _DetailRow(
                             '반납 사유',
@@ -244,7 +245,16 @@ class AssetDetailPage extends GetView<AssetDetailController> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(CustomRadius.radius600),
+          ),
           title: Text('${row.label} 수정'),
+          contentPadding: const EdgeInsets.fromLTRB(
+            CustomSpacing.spacing500,
+            CustomSpacing.spacing400,
+            CustomSpacing.spacing500,
+            CustomSpacing.spacing200,
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,7 +266,9 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                 keyboardType: keyboardType,
                 inputFormatters: inputFormatters,
                 decoration: InputDecoration(
+                  labelText: row.label,
                   hintText: hint.isEmpty ? null : hint,
+                  border: const OutlineInputBorder(),
                 ),
               ),
               if (hint.isNotEmpty)
@@ -265,22 +277,24 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                   child: Text(
                     hint,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.color
-                              ?.withOpacity(0.7),
-                        ),
+                      color: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.color?.withOpacity(0.7),
+                    ),
                   ),
                 ),
             ],
+          ),
+          actionsPadding: const EdgeInsets.symmetric(
+            horizontal: CustomSpacing.spacing400,
+            vertical: CustomSpacing.spacing300,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: const Text('취소'),
             ),
-            ElevatedButton(
+            FilledButton(
               onPressed: () =>
                   Navigator.of(context).pop(textController.text.trim()),
               child: const Text('저장'),
@@ -299,36 +313,67 @@ class AssetDetailPage extends GetView<AssetDetailController> {
     BuildContext context,
     _DetailRow row,
   ) async {
-    final List<NotionPropertyOption> options =
-        await controller.fetchPropertyOptions(row.propertyName);
+    final List<NotionPropertyOption> options = await controller
+        .fetchPropertyOptions(row.propertyName);
     if (options.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('선택 가능한 항목이 없습니다.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('선택 가능한 항목이 없습니다.')));
       return false;
     }
 
     final String? selected = await showModalBottomSheet<String>(
       context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(CustomRadius.radius600),
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
       builder: (context) {
+        final double maxHeight = MediaQuery.of(context).size.height * 0.7;
         return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: const Text('선택 해제'),
-                onTap: () => Navigator.of(context).pop(''),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: maxHeight),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 48,
+                    height: 4,
+                    margin: const EdgeInsets.symmetric(
+                      vertical: CustomSpacing.spacing300,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.color?.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.remove_circle_outline),
+                    title: const Text('선택 해제'),
+                    onTap: () => Navigator.of(context).pop(''),
+                  ),
+                  const Divider(height: 0),
+                  ...options.map(
+                    (option) => ListTile(
+                      leading: Icon(
+                        row.value.trim() == option.name
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                      ),
+                      title: Text(option.name),
+                      onTap: () => Navigator.of(context).pop(option.name),
+                    ),
+                  ),
+                  const SizedBox(height: CustomSpacing.spacing400),
+                ],
               ),
-              ...options.map(
-                (option) => ListTile(
-                  title: Text(option.name),
-                  trailing: row.value.trim() == option.name
-                      ? const Icon(Icons.check)
-                      : null,
-                  onTap: () => Navigator.of(context).pop(option.name),
-                ),
-              ),
-            ],
+            ),
           ),
         );
       },
@@ -344,12 +389,12 @@ class AssetDetailPage extends GetView<AssetDetailController> {
     BuildContext context,
     _DetailRow row,
   ) async {
-    final List<NotionPropertyOption> options =
-        await controller.fetchPropertyOptions(row.propertyName);
+    final List<NotionPropertyOption> options = await controller
+        .fetchPropertyOptions(row.propertyName);
     if (options.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('선택 가능한 항목이 없습니다.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('선택 가능한 항목이 없습니다.')));
       return false;
     }
 
@@ -366,12 +411,21 @@ class AssetDetailPage extends GetView<AssetDetailController> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(CustomRadius.radius600),
+              ),
               title: Text('${row.label} 수정'),
+              contentPadding: const EdgeInsets.only(
+                left: CustomSpacing.spacing300,
+                right: CustomSpacing.spacing100,
+                top: CustomSpacing.spacing200,
+                bottom: CustomSpacing.spacing200,
+              ),
               content: SizedBox(
                 width: double.maxFinite,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                child: Scrollbar(
+                  child: ListView(
+                    shrinkWrap: true,
                     children: options
                         .map(
                           (option) => CheckboxListTile(
@@ -392,6 +446,10 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                   ),
                 ),
               ),
+              actionsPadding: const EdgeInsets.symmetric(
+                horizontal: CustomSpacing.spacing400,
+                vertical: CustomSpacing.spacing300,
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -401,7 +459,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                   onPressed: () => Navigator.of(context).pop(<String>{}),
                   child: const Text('지우기'),
                 ),
-                ElevatedButton(
+                FilledButton(
                   onPressed: () => Navigator.of(context).pop(selections),
                   child: const Text('저장'),
                 ),
@@ -427,7 +485,16 @@ class AssetDetailPage extends GetView<AssetDetailController> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(CustomRadius.radius600),
+              ),
               title: Text('${row.label} 수정'),
+              contentPadding: const EdgeInsets.fromLTRB(
+                CustomSpacing.spacing500,
+                CustomSpacing.spacing300,
+                CustomSpacing.spacing500,
+                CustomSpacing.spacing200,
+              ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -436,9 +503,9 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                     selectedRange == null
                         ? '선택된 날짜 없음'
                         : _formatDateRange(selectedRange!),
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(height: CustomSpacing.spacing200),
+                  const SizedBox(height: CustomSpacing.spacing300),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
@@ -465,6 +532,10 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                   ),
                 ],
               ),
+              actionsPadding: const EdgeInsets.symmetric(
+                horizontal: CustomSpacing.spacing400,
+                vertical: CustomSpacing.spacing300,
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -476,7 +547,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                   ).pop(const _DateDialogResult(clear: true)),
                   child: const Text('지우기'),
                 ),
-                ElevatedButton(
+                FilledButton(
                   onPressed: () => Navigator.of(
                     context,
                   ).pop(_DateDialogResult(clear: false, range: selectedRange)),
@@ -497,9 +568,9 @@ class AssetDetailPage extends GetView<AssetDetailController> {
     } else {
       final DateTimeRange? range = result.range;
       if (range == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('날짜를 선택해주세요.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('날짜를 선택해주세요.')));
         return;
       }
       newValue = _formatDateRange(range);
@@ -546,8 +617,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
     String propertyName,
     String value,
   ) async {
-    final bool success =
-        await controller.updateProperty(propertyName, value);
+    final bool success = await controller.updateProperty(propertyName, value);
     final messenger = ScaffoldMessenger.of(context);
     final String message = success ? '수정되었습니다.' : '수정에 실패했습니다.';
     messenger.showSnackBar(SnackBar(content: Text(message)));
@@ -798,7 +868,7 @@ class _DetailItem extends StatelessWidget {
         ),
         const SizedBox(height: CustomSpacing.spacing100),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Text(
@@ -809,15 +879,59 @@ class _DetailItem extends StatelessWidget {
               ),
             ),
             if (editable)
-              IconButton(
-                icon: const Icon(Icons.edit_outlined, size: 20),
-                color: colorTheme.contentStandardSecondary,
-                onPressed: isUpdating ? null : onEdit,
-                tooltip: '${row.label} 수정',
+              Padding(
+                padding: const EdgeInsets.only(left: CustomSpacing.spacing200),
+                child: _EditActionButton(
+                  label: '수정',
+                  onPressed: isUpdating ? null : onEdit,
+                  colorTheme: colorTheme,
+                  textTheme: textTheme,
+                ),
               ),
           ],
         ),
       ],
+    );
+  }
+}
+
+class _EditActionButton extends StatelessWidget {
+  final String label;
+  final VoidCallback? onPressed;
+  final CustomColors colorTheme;
+  final CustomTypography textTheme;
+
+  const _EditActionButton({
+    required this.label,
+    required this.onPressed,
+    required this.colorTheme,
+    required this.textTheme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: CustomSpacing.spacing300,
+          vertical: CustomSpacing.spacing150,
+        ),
+        backgroundColor: colorTheme.componentsFillStandardSecondary,
+        foregroundColor: colorTheme.contentStandardPrimary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(CustomRadius.radius500),
+          side: BorderSide(color: colorTheme.lineOutline.withOpacity(0.3)),
+        ),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      icon: const Icon(Icons.edit_outlined, size: 16),
+      label: Text(
+        label,
+        style: textTheme.label.copyWith(
+          color: colorTheme.contentStandardPrimary,
+        ),
+      ),
     );
   }
 }
