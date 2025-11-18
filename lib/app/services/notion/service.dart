@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 
+import '../../core/utils/notion_environment.dart';
 import 'model.dart';
 import 'repository.dart';
 
@@ -11,7 +11,7 @@ class NotionService extends GetxController {
   final Map<String, Map<String, NotionPropertyDefinition>> _schemaCache = {};
 
   NotionService({NotionRepository? repository})
-      : repository = repository ?? NotionRepository();
+    : repository = repository ?? NotionRepository();
 
   Future<NotionPage?> fetchAssetByNumber(String assetNumber) async {
     try {
@@ -50,8 +50,7 @@ class NotionService extends GetxController {
     updates.forEach((propertyName, value) {
       final NotionPropertyField? field = page.field(propertyName);
       if (field == null || !field.isEditable) return;
-      final Map<String, dynamic>? payload =
-          _buildPropertyPayload(field, value);
+      final Map<String, dynamic>? payload = _buildPropertyPayload(field, value);
       if (payload != null) {
         properties[propertyName] = payload;
       }
@@ -78,14 +77,16 @@ class NotionService extends GetxController {
   ) async {
     final String? databaseId = page.parentDatabaseId?.isNotEmpty == true
         ? page.parentDatabaseId
-        : dotenv.env['PROD_DATABASE_ID'];
+        : NotionEnvironment.databaseId;
     if (databaseId == null || databaseId.isEmpty) return [];
 
     try {
       final Map<String, NotionPropertyDefinition> schema =
           await _getDatabaseSchema(databaseId);
-      final NotionPropertyDefinition? definition =
-          _definitionFor(schema, propertyName);
+      final NotionPropertyDefinition? definition = _definitionFor(
+        schema,
+        propertyName,
+      );
       if (definition == null) return [];
       return definition.options;
     } catch (e) {
@@ -98,15 +99,17 @@ class NotionService extends GetxController {
     String propertyName,
   ) async {
     final String? databaseId =
-        dotenv.env['PROD_DATABASE_ID'] ?? pageDatabaseFallback();
+        NotionEnvironment.databaseId ?? pageDatabaseFallback();
     if (databaseId == null || databaseId.isEmpty) {
       return [];
     }
     try {
       final Map<String, NotionPropertyDefinition> schema =
           await _getDatabaseSchema(databaseId);
-      final NotionPropertyDefinition? definition =
-          _definitionFor(schema, propertyName);
+      final NotionPropertyDefinition? definition = _definitionFor(
+        schema,
+        propertyName,
+      );
       if (definition == null) return [];
       return definition.options;
     } catch (e) {
@@ -130,13 +133,9 @@ class NotionService extends GetxController {
 
     switch (field.type) {
       case 'title':
-        return {
-          'title': _buildRichText(trimmed),
-        };
+        return {'title': _buildRichText(trimmed)};
       case 'rich_text':
-        return {
-          'rich_text': _buildRichText(trimmed),
-        };
+        return {'rich_text': _buildRichText(trimmed)};
       case 'number':
         if (trimmed.isEmpty) {
           return {'number': null};
@@ -208,18 +207,19 @@ class NotionService extends GetxController {
       {
         'type': 'text',
         'text': {'content': value},
-      }
+      },
     ];
   }
 
   Future<Map<String, NotionPropertyDefinition>> _getDatabaseSchema(
-      String databaseId) async {
+    String databaseId,
+  ) async {
     final cached = _schemaCache[databaseId];
     if (cached != null && cached.isNotEmpty) {
       return cached;
     }
-    final Map<String, NotionPropertyDefinition> schema =
-        await repository.fetchDatabaseSchema(databaseId);
+    final Map<String, NotionPropertyDefinition> schema = await repository
+        .fetchDatabaseSchema(databaseId);
     _schemaCache[databaseId] = schema;
     return schema;
   }

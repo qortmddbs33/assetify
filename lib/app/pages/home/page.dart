@@ -5,7 +5,8 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/static.dart';
 import '../../core/theme/typography.dart';
 import '../../routes/routes.dart';
-import '../../widgets/gestureDetector.dart';
+import '../../widgets/gesture_detector.dart';
+import '../../widgets/standard_bottom_sheet.dart';
 import 'controller.dart';
 
 class HomePage extends GetView<HomePageController> {
@@ -46,8 +47,21 @@ class HomePage extends GetView<HomePageController> {
                   color: colorTheme.contentStandardSecondary,
                 ),
               ),
-              const SizedBox(height: CustomSpacing.spacing900),
-              _HomeMenuGrid(colorTheme: colorTheme, textTheme: textTheme),
+              const SizedBox(height: CustomSpacing.spacing700),
+              Obx(() {
+                return _ApiKeySection(
+                  controller: controller,
+                  colorTheme: colorTheme,
+                  textTheme: textTheme,
+                  hasKey: controller.hasStoredApiKey,
+                );
+              }),
+              const SizedBox(height: CustomSpacing.spacing700),
+              _HomeMenuGrid(
+                colorTheme: colorTheme,
+                textTheme: textTheme,
+                controller: controller,
+              ),
               const Spacer(),
               Center(
                 child: Column(
@@ -84,8 +98,13 @@ class HomePage extends GetView<HomePageController> {
 class _HomeMenuGrid extends StatelessWidget {
   final CustomColors colorTheme;
   final CustomTypography textTheme;
+  final HomePageController controller;
 
-  const _HomeMenuGrid({required this.colorTheme, required this.textTheme});
+  const _HomeMenuGrid({
+    required this.colorTheme,
+    required this.textTheme,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -93,12 +112,12 @@ class _HomeMenuGrid extends StatelessWidget {
       _HomeMenuItem(
         title: '자산 조회',
         description: '자산을 검색하고, 정보를 변경할 수 있어요.',
-        onTap: () => Get.toNamed(Routes.ASSET_LOOKUP),
+        onTap: () => controller.navigateOrWarn(Routes.ASSET_LOOKUP),
       ),
       _HomeMenuItem(
         title: '빠른 상태 변경',
         description: '바코드로 상태를 한 번에 변경할 수 있어요.',
-        onTap: () => Get.toNamed(Routes.QUICK_STATUS),
+        onTap: () => controller.navigateOrWarn(Routes.QUICK_STATUS),
       ),
     ];
 
@@ -185,4 +204,163 @@ class _HomeMenuItem {
     required this.description,
     required this.onTap,
   });
+}
+
+class _ApiKeySection extends StatelessWidget {
+  final HomePageController controller;
+  final CustomColors colorTheme;
+  final CustomTypography textTheme;
+  final bool hasKey;
+
+  const _ApiKeySection({
+    required this.controller,
+    required this.colorTheme,
+    required this.textTheme,
+    required this.hasKey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Color backgroundColor = hasKey
+        ? colorTheme.coreAccent
+        : colorTheme.coreStatusNegative;
+    final IconData statusIcon = hasKey
+        ? Icons.shield_outlined
+        : Icons.warning_amber_rounded;
+    final String statusMessage = hasKey
+        ? 'API 키를 기기에 안전하게 보관 중이예요.'
+        : 'API 키가 기기에 저장되어 있지 않아요.';
+    final Color foregroundColor = colorTheme.contentInvertedPrimary;
+
+    return Material(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(CustomRadius.radius700),
+      child: InkWell(
+        onTap: () => _openApiKeyBottomSheet(context),
+        borderRadius: BorderRadius.circular(CustomRadius.radius700),
+        child: Padding(
+          padding: const EdgeInsets.all(CustomSpacing.spacing400),
+          child: Row(
+            children: [
+              Icon(statusIcon, color: foregroundColor),
+              const SizedBox(width: CustomSpacing.spacing200),
+              Text(
+                statusMessage,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.label.copyWith(color: foregroundColor),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openApiKeyBottomSheet(BuildContext context) {
+    controller.notionApiKeyController.text =
+        controller.storedApiKey.value ?? '';
+    showStandardBottomSheet<void>(context, (
+      sheetContext,
+      sheetColors,
+      sheetTypography,
+    ) {
+      final NavigatorState navigator = Navigator.of(sheetContext);
+      return Obx(() {
+        final bool currentHasKey = controller.hasStoredApiKey;
+        final bool isProcessing = controller.isSaving;
+        return StandardSheetContentWrapper(
+          title: 'Notion API 키 입력',
+          colorTheme: sheetColors,
+          textTheme: sheetTypography,
+          onClose: navigator.pop,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              StandardSheetCard(
+                colorTheme: sheetColors,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Notion API 키를 입력하면 기기에 암호화되어 저장돼요.',
+                      style: sheetTypography.body.copyWith(
+                        color: sheetColors.contentStandardSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: CustomSpacing.spacing300),
+                    TextField(
+                      controller: controller.notionApiKeyController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        hintText: 'ntn_...',
+                        filled: true,
+                        fillColor: sheetColors.componentsFillStandardPrimary,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            CustomRadius.radius500,
+                          ),
+                          borderSide: BorderSide(
+                            color: sheetColors.lineOutline,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            CustomRadius.radius500,
+                          ),
+                          borderSide: BorderSide(color: sheetColors.coreAccent),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: CustomSpacing.spacing400),
+              Row(
+                children: [
+                  StandardSheetActionButton(
+                    label: '취소',
+                    onPressed: navigator.pop,
+                    colorTheme: sheetColors,
+                    textTheme: sheetTypography,
+                    enabled: !isProcessing,
+                  ),
+                  const SizedBox(width: CustomSpacing.spacing300),
+                  StandardSheetActionButton(
+                    label: currentHasKey ? '업데이트' : '저장',
+                    onPressed: () async {
+                      await controller.saveApiKey();
+                      navigator.pop();
+                    },
+                    colorTheme: sheetColors,
+                    textTheme: sheetTypography,
+                    primary: true,
+                    enabled: !isProcessing,
+                  ),
+                ],
+              ),
+              if (currentHasKey) ...[
+                const SizedBox(height: CustomSpacing.spacing300),
+                Row(
+                  children: [
+                    StandardSheetActionButton(
+                      label: 'API 키 삭제',
+                      onPressed: () async {
+                        await controller.clearApiKey();
+                        navigator.pop();
+                      },
+                      colorTheme: sheetColors,
+                      textTheme: sheetTypography,
+                      destructive: true,
+                      enabled: !isProcessing,
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        );
+      });
+    });
+  }
 }

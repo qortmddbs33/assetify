@@ -47,6 +47,7 @@ dependencies:
   flutter_displaymode: ^0.7.0
   url_strategy: ^0.3.0
   ai_barcode_scanner: ^7.1.0
+  flutter_secure_storage: ^9.2.2
 
 dev_dependencies:
   flutter_test:

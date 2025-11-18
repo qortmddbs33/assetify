@@ -6,6 +6,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/static.dart';
 import '../../core/theme/typography.dart';
 import '../../services/notion/model.dart';
+import '../../widgets/standard_bottom_sheet.dart';
 import 'controller.dart';
 
 class AssetDetailPage extends GetView<AssetDetailController> {
@@ -241,10 +242,10 @@ class AssetDetailPage extends GetView<AssetDetailController> {
         keyboardType = TextInputType.text;
     }
 
-    final String? updatedValue = await _showStandardBottomSheet<String>(
+    final String? updatedValue = await showStandardBottomSheet<String>(
       context,
       (sheetContext, colorTheme, textTheme) {
-        return _SheetContentWrapper(
+        return StandardSheetContentWrapper(
           title: '${row.label} 수정',
           colorTheme: colorTheme,
           textTheme: textTheme,
@@ -280,14 +281,14 @@ class AssetDetailPage extends GetView<AssetDetailController> {
               const SizedBox(height: CustomSpacing.spacing400),
               Row(
                 children: [
-                  _SheetActionButton(
+                  StandardSheetActionButton(
                     label: '취소',
                     onPressed: () => Navigator.of(sheetContext).maybePop(),
                     colorTheme: colorTheme,
                     textTheme: textTheme,
                   ),
                   const SizedBox(width: CustomSpacing.spacing200),
-                  _SheetActionButton(
+                  StandardSheetActionButton(
                     label: '저장',
                     primary: true,
                     onPressed: () => Navigator.of(
@@ -322,23 +323,23 @@ class AssetDetailPage extends GetView<AssetDetailController> {
       return false;
     }
 
-    final String? selected = await _showStandardBottomSheet<String>(context, (
+    final String? selected = await showStandardBottomSheet<String>(context, (
       sheetContext,
       colorTheme,
       textTheme,
     ) {
       final double maxHeight = MediaQuery.of(sheetContext).size.height * 0.6;
-      return _SheetContentWrapper(
+      return StandardSheetContentWrapper(
         title: '${row.label} 선택',
         colorTheme: colorTheme,
         textTheme: textTheme,
         onClose: () => Navigator.of(sheetContext).maybePop(),
-        child: _SheetCard(
+        child: StandardSheetCard(
           colorTheme: colorTheme,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _SheetListTile(
+              StandardSheetListTile(
                 icon: Icons.remove_circle_outline,
                 label: '선택 해제',
                 colorTheme: colorTheme,
@@ -358,7 +359,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                     final option = options[index];
                     final bool isSelected =
                         row.value.trim() == option.name.trim();
-                    return _SheetListTile(
+                    return StandardSheetListTile(
                       icon: isSelected
                           ? Icons.radio_button_checked
                           : Icons.radio_button_unchecked,
@@ -401,14 +402,14 @@ class AssetDetailPage extends GetView<AssetDetailController> {
         .where((element) => element.isNotEmpty)
         .toSet();
 
-    final Set<String>? result = await _showStandardBottomSheet<Set<String>>(
+    final Set<String>? result = await showStandardBottomSheet<Set<String>>(
       context,
       (sheetContext, colorTheme, textTheme) {
         final Set<String> selections = {...initialSelections};
         final double maxHeight = MediaQuery.of(sheetContext).size.height * 0.6;
         return StatefulBuilder(
           builder: (context, setState) {
-            return _SheetContentWrapper(
+            return StandardSheetContentWrapper(
               title: '${row.label} 수정',
               colorTheme: colorTheme,
               textTheme: textTheme,
@@ -417,7 +418,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _SheetCard(
+                  StandardSheetCard(
                     colorTheme: colorTheme,
                     child: ConstrainedBox(
                       constraints: BoxConstraints(maxHeight: maxHeight),
@@ -446,14 +447,14 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                   const SizedBox(height: CustomSpacing.spacing400),
                   Row(
                     children: [
-                      _SheetActionButton(
+                      StandardSheetActionButton(
                         label: '취소',
                         onPressed: () => Navigator.of(sheetContext).maybePop(),
                         colorTheme: colorTheme,
                         textTheme: textTheme,
                       ),
                       const SizedBox(width: CustomSpacing.spacing200),
-                      _SheetActionButton(
+                      StandardSheetActionButton(
                         label: '지우기',
                         destructive: true,
                         onPressed: () =>
@@ -462,7 +463,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                         textTheme: textTheme,
                       ),
                       const SizedBox(width: CustomSpacing.spacing200),
-                      _SheetActionButton(
+                      StandardSheetActionButton(
                         label: '저장',
                         primary: true,
                         onPressed: () =>
@@ -489,7 +490,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
 
   Future<void> _showDateEditDialog(BuildContext context, _DetailRow row) async {
     final _DateDialogResult? result =
-        await _showStandardBottomSheet<_DateDialogResult>(context, (
+        await showStandardBottomSheet<_DateDialogResult>(context, (
           sheetContext,
           colorTheme,
           textTheme,
@@ -497,7 +498,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
           DateTimeRange? selectedRange = _parseDateRange(row.value);
           return StatefulBuilder(
             builder: (context, setState) {
-              return _SheetContentWrapper(
+              return StandardSheetContentWrapper(
                 title: '${row.label} 수정',
                 colorTheme: colorTheme,
                 textTheme: textTheme,
@@ -506,7 +507,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _SheetCard(
+                    StandardSheetCard(
                       colorTheme: colorTheme,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -560,7 +561,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                     const SizedBox(height: CustomSpacing.spacing400),
                     Row(
                       children: [
-                        _SheetActionButton(
+                        StandardSheetActionButton(
                           label: '취소',
                           onPressed: () =>
                               Navigator.of(sheetContext).maybePop(),
@@ -568,7 +569,7 @@ class AssetDetailPage extends GetView<AssetDetailController> {
                           textTheme: textTheme,
                         ),
                         const SizedBox(width: CustomSpacing.spacing200),
-                        _SheetActionButton(
+                        StandardSheetActionButton(
                           label: '저장',
                           primary: true,
                           onPressed: () {
@@ -654,50 +655,6 @@ class AssetDetailPage extends GetView<AssetDetailController> {
     final String message = success ? '수정되었습니다.' : '수정에 실패했습니다.';
     messenger.showSnackBar(SnackBar(content: Text(message)));
   }
-
-  Future<T?> _showStandardBottomSheet<T>(
-    BuildContext context,
-    Widget Function(
-      BuildContext sheetContext,
-      CustomColors colorTheme,
-      CustomTypography textTheme,
-    )
-    builder,
-  ) {
-    final CustomColors colorTheme = Theme.of(
-      context,
-    ).extension<CustomColors>()!;
-    final CustomTypography textTheme = Theme.of(
-      context,
-    ).extension<CustomTypography>()!;
-    return showModalBottomSheet<T>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: colorTheme.componentsFillStandardPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(CustomRadius.radius600),
-        ),
-      ),
-      clipBehavior: Clip.antiAlias,
-      builder: (sheetContext) {
-        final double bottomInset = MediaQuery.of(
-          sheetContext,
-        ).viewInsets.bottom;
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: CustomSpacing.spacing500,
-              right: CustomSpacing.spacing500,
-              top: CustomSpacing.spacing400,
-              bottom: bottomInset + CustomSpacing.spacing400,
-            ),
-            child: builder(sheetContext, colorTheme, textTheme),
-          ),
-        );
-      },
-    );
-  }
 }
 
 class _DateDialogResult {
@@ -705,174 +662,6 @@ class _DateDialogResult {
   final DateTimeRange? range;
 
   const _DateDialogResult({required this.clear, this.range});
-}
-
-class _SheetContentWrapper extends StatelessWidget {
-  final String title;
-  final Widget child;
-  final CustomColors colorTheme;
-  final CustomTypography textTheme;
-  final VoidCallback onClose;
-
-  const _SheetContentWrapper({
-    required this.title,
-    required this.child,
-    required this.colorTheme,
-    required this.textTheme,
-    required this.onClose,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Center(
-            child: Container(
-              width: 48,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: CustomSpacing.spacing400),
-              decoration: BoxDecoration(
-                color: colorTheme.lineOutline.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  style: textTheme.title.copyWith(
-                    color: colorTheme.contentStandardPrimary,
-                  ),
-                ),
-              ),
-              IconButton(
-                onPressed: onClose,
-                icon: const Icon(Icons.close_rounded),
-              ),
-            ],
-          ),
-          const SizedBox(height: CustomSpacing.spacing300),
-          child,
-        ],
-      ),
-    );
-  }
-}
-
-class _SheetCard extends StatelessWidget {
-  final Widget child;
-  final CustomColors colorTheme;
-
-  const _SheetCard({required this.child, required this.colorTheme});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(CustomSpacing.spacing400),
-      decoration: BoxDecoration(
-        color: colorTheme.componentsFillStandardSecondary,
-        borderRadius: BorderRadius.circular(CustomRadius.radius600),
-      ),
-      child: child,
-    );
-  }
-}
-
-class _SheetListTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final CustomColors colorTheme;
-  final CustomTypography textTheme;
-  final bool destructive;
-
-  const _SheetListTile({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    required this.colorTheme,
-    required this.textTheme,
-    this.destructive = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final Color textColor = destructive
-        ? colorTheme.coreStatusNegative
-        : colorTheme.contentStandardPrimary;
-    return ListTile(
-      leading: Icon(icon, color: textColor),
-      title: Text(label, style: textTheme.body.copyWith(color: textColor)),
-      onTap: onTap,
-    );
-  }
-}
-
-class _SheetActionButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onPressed;
-  final bool primary;
-  final bool destructive;
-  final CustomColors colorTheme;
-  final CustomTypography textTheme;
-
-  const _SheetActionButton({
-    required this.label,
-    required this.onPressed,
-    required this.colorTheme,
-    required this.textTheme,
-    this.primary = false,
-    this.destructive = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (primary) {
-      final Color background = destructive
-          ? colorTheme.coreStatusNegative
-          : colorTheme.coreAccent;
-      return Expanded(
-        child: FilledButton(
-          onPressed: onPressed,
-          style: FilledButton.styleFrom(
-            backgroundColor: background,
-            foregroundColor: colorTheme.contentInvertedPrimary,
-            padding: EdgeInsets.symmetric(vertical: CustomSpacing.spacing400),
-          ),
-          child: Text(
-            label,
-            style: textTheme.heading.copyWith(
-              color: colorTheme.contentInvertedPrimary,
-            ),
-          ),
-        ),
-      );
-    }
-    final Color textColor = destructive
-        ? colorTheme.coreStatusNegative
-        : colorTheme.contentStandardPrimary;
-    return Expanded(
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: textColor,
-          side: BorderSide(
-            color: destructive
-                ? colorTheme.coreStatusNegative
-                : colorTheme.lineOutline,
-          ),
-          padding: EdgeInsets.symmetric(vertical: CustomSpacing.spacing400),
-        ),
-        child: Text(label, style: textTheme.heading.copyWith(color: textColor)),
-      ),
-    );
-  }
 }
 
 class _AssetDetailSummary extends StatelessWidget {

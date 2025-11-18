@@ -11,6 +11,7 @@ import 'package:url_strategy/url_strategy.dart';
 
 import '../../provider/api.dart';
 import '../../provider/api_interface.dart';
+import '../../services/credentials/service.dart';
 
 class AppLoader {
   Future<void> load() async {
@@ -20,6 +21,8 @@ class AppLoader {
     setPathUrlStrategy();
 
     await dotenv.load(fileName: "env/.env", isOptional: true);
+
+    await Get.putAsync<CredentialsService>(() => CredentialsService().init());
 
     Get.put<ApiProvider>(ProdApiProvider());
 

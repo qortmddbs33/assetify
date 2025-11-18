@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'property_parser.dart';
+import '../../core/utils/property_parser.dart';
 
 part 'model.g.dart';
 
@@ -291,15 +291,18 @@ class NotionPropertyDefinition {
   }
 
   static Map<String, NotionPropertyDefinition> mapFromDatabase(
-      Map<String, dynamic>? json) {
+    Map<String, dynamic>? json,
+  ) {
     if (json == null) return {};
     final Map<String, NotionPropertyDefinition> result = {};
     json.forEach((key, value) {
       if (value is Map<String, dynamic>) {
         result[key] = NotionPropertyDefinition.fromJson(key, value);
       } else if (value is Map) {
-        result[key] =
-            NotionPropertyDefinition.fromJson(key, Map<String, dynamic>.from(value));
+        result[key] = NotionPropertyDefinition.fromJson(
+          key,
+          Map<String, dynamic>.from(value),
+        );
       }
     });
     return result;
@@ -320,11 +323,13 @@ class NotionPropertyOption {
   });
 
   static List<NotionPropertyOption> listFromPropertyJson(
-      Map<String, dynamic>? json) {
+    Map<String, dynamic>? json,
+  ) {
     if (json == null) return const <NotionPropertyOption>[];
     final String? type = json['type'] as String?;
     final dynamic typeData = json[type];
-    if (typeData is! Map<String, dynamic>) return const <NotionPropertyOption>[];
+    if (typeData is! Map<String, dynamic>)
+      return const <NotionPropertyOption>[];
     final dynamic options = typeData['options'];
     if (options is! List) return const <NotionPropertyOption>[];
     return options

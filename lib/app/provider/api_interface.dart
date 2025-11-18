@@ -2,28 +2,59 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get.dart' hide Response;
 
+import '../services/credentials/service.dart';
 import 'model/response.dart';
 
 abstract class ApiProvider {
   late Dio dio = Dio();
+  final CredentialsService credentialsService;
 
-  ApiProvider() {
-    dio = Dio(BaseOptions(
-      headers: {
-        'Authorization': 'Bearer ${dotenv.env['NOTION_API_KEY']}',
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Notion-Version': '2022-02-22',
-      },
-    ));
+  ApiProvider({CredentialsService? credentialsService})
+    : credentialsService =
+          credentialsService ?? Get.find<CredentialsService>() {
+    dio = Dio(
+      BaseOptions(
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-02-22',
+        },
+      ),
+    );
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          final String? apiKey = this.credentialsService.notionApiKey;
+          if (apiKey == null || apiKey.isEmpty) {
+            handler.reject(
+              DioException(
+                requestOptions: options,
+                error: 'NOTION_API_KEY_MISSING',
+                message: 'Notion API key is not configured.',
+                type: DioExceptionType.unknown,
+              ),
+            );
+            return;
+          }
+          options.headers['Authorization'] = 'Bearer $apiKey';
+          handler.next(options);
+        },
+      ),
+    );
   }
 
-  Future<CustomHttpResponse> get(String path,
-      {Map<String, dynamic>? queryParameters, Options? options}) async {
-    Response dioResponse =
-        await dio.get(path, queryParameters: queryParameters, options: options);
+  Future<CustomHttpResponse> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
+    Response dioResponse = await dio.get(
+      path,
+      queryParameters: queryParameters,
+      options: options,
+    );
     return CustomHttpResponse.fromDioResponse(dioResponse);
   }
 
@@ -39,8 +70,10 @@ abstract class ApiProvider {
       StreamTransformer.fromHandlers(
         handleData: (rawdata, sink) {
           String strData = String.fromCharCodes(rawdata);
-          String formatedData =
-              strData.substring(strData.indexOf('{'), strData.indexOf('}') + 1);
+          String formatedData = strData.substring(
+            strData.indexOf('{'),
+            strData.indexOf('}') + 1,
+          );
           Map<String, dynamic> data = json.decode(formatedData);
 
           sink.add(data);
@@ -49,29 +82,44 @@ abstract class ApiProvider {
     );
   }
 
-  Future<CustomHttpResponse> delete(String path,
-      {dynamic data, Options? options}) async {
+  Future<CustomHttpResponse> delete(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
     Response dioResponse = await dio.delete(path, data: data, options: options);
     return CustomHttpResponse.fromDioResponse(dioResponse);
   }
 
-  Future<CustomHttpResponse> post(String path,
-      {dynamic data,
-      Map<String, dynamic>? queryParameters,
-      Options? options}) async {
-    Response dioResponse = await dio.post(path,
-        data: data, queryParameters: queryParameters, options: options);
+  Future<CustomHttpResponse> post(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
+    Response dioResponse = await dio.post(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+    );
     return CustomHttpResponse.fromDioResponse(dioResponse);
   }
 
-  Future<CustomHttpResponse> patch(String path,
-      {dynamic data, Options? options}) async {
+  Future<CustomHttpResponse> patch(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
     Response dioResponse = await dio.patch(path, data: data, options: options);
     return CustomHttpResponse.fromDioResponse(dioResponse);
   }
 
-  Future<CustomHttpResponse> put(String path,
-      {dynamic data, Options? options}) async {
+  Future<CustomHttpResponse> put(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
     Response dioResponse = await dio.put(path, data: data, options: options);
     return CustomHttpResponse.fromDioResponse(dioResponse);
   }
