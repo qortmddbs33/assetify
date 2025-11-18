@@ -369,76 +369,81 @@ class _FieldOptionsSheet extends StatelessWidget {
           bottom: bottomInset + CustomSpacing.spacing400,
         ),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
-                child: Container(
-                  width: 48,
-                  height: 4,
-                  margin: const EdgeInsets.only(
-                    bottom: CustomSpacing.spacing400,
-                  ),
-                  decoration: BoxDecoration(
-                    color: colorTheme.lineOutline.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
+          child: _QuickSheetWrapper(
+            title: '필드 옵션 선택',
+            colorTheme: colorTheme,
+            textTheme: textTheme,
+            onClose: () => Navigator.of(context).maybePop(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _SheetSectionCard(
+                  title: '날짜 설정',
+                  colorTheme: colorTheme,
+                  textTheme: textTheme,
+                  children: [
+                    _DateActionDropdown(
+                      label: '사용일자',
+                      action: controller.usageDateAction,
+                      onSelected: controller.setUsageDateAction,
+                      colorTheme: colorTheme,
+                      textTheme: textTheme,
+                    ),
+                    const SizedBox(height: CustomSpacing.spacing300),
+                    _DateActionDropdown(
+                      label: '반납일자',
+                      action: controller.returnDateAction,
+                      onSelected: controller.setReturnDateAction,
+                      colorTheme: colorTheme,
+                      textTheme: textTheme,
+                    ),
+                    const SizedBox(height: CustomSpacing.spacing300),
+                    _DateActionDropdown(
+                      label: '수리일자',
+                      action: controller.repairDateAction,
+                      onSelected: controller.setRepairDateAction,
+                      colorTheme: colorTheme,
+                      textTheme: textTheme,
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: CustomSpacing.spacing300),
-              _DateActionDropdown(
-                label: '사용일자',
-                action: controller.usageDateAction,
-                onSelected: controller.setUsageDateAction,
-                colorTheme: colorTheme,
-                textTheme: textTheme,
-              ),
-              const SizedBox(height: CustomSpacing.spacing300),
-              _DateActionDropdown(
-                label: '반납일자',
-                action: controller.returnDateAction,
-                onSelected: controller.setReturnDateAction,
-                colorTheme: colorTheme,
-                textTheme: textTheme,
-              ),
-              const SizedBox(height: CustomSpacing.spacing300),
-              _DateActionDropdown(
-                label: '수리일자',
-                action: controller.repairDateAction,
-                onSelected: controller.setRepairDateAction,
-                colorTheme: colorTheme,
-                textTheme: textTheme,
-              ),
-              const SizedBox(height: CustomSpacing.spacing400),
-              _SelectOptionControl(
-                label: '반납사유',
-                options: controller.returnReasonOptions,
-                selection: controller.selectedReturnReason,
-                onSelected: controller.setReturnReasonSelection,
-              ),
-              const SizedBox(height: CustomSpacing.spacing300),
-              _SelectOptionControl(
-                label: '수리 작업 유형',
-                options: controller.repairWorkTypeOptions,
-                selection: controller.selectedRepairWorkType,
-                onSelected: controller.setRepairWorkTypeSelection,
-              ),
-              const SizedBox(height: CustomSpacing.spacing300),
-              _SelectOptionControl(
-                label: '수리진행상황',
-                options: controller.repairStatusOptions,
-                selection: controller.selectedRepairStatus,
-                onSelected: controller.setRepairStatusSelection,
-              ),
-              const SizedBox(height: CustomSpacing.spacing300),
-              _SelectOptionControl(
-                label: '출고진행상황',
-                options: controller.shipmentStatusOptions,
-                selection: controller.selectedShipmentStatus,
-                onSelected: controller.setShipmentStatusSelection,
-              ),
-            ],
+                const SizedBox(height: CustomSpacing.spacing400),
+                _SheetSectionCard(
+                  title: '사유 및 진행 상황',
+                  colorTheme: colorTheme,
+                  textTheme: textTheme,
+                  children: [
+                    _SelectOptionControl(
+                      label: '반납사유',
+                      options: controller.returnReasonOptions,
+                      selection: controller.selectedReturnReason,
+                      onSelected: controller.setReturnReasonSelection,
+                    ),
+                    const SizedBox(height: CustomSpacing.spacing300),
+                    _SelectOptionControl(
+                      label: '수리 작업 유형',
+                      options: controller.repairWorkTypeOptions,
+                      selection: controller.selectedRepairWorkType,
+                      onSelected: controller.setRepairWorkTypeSelection,
+                    ),
+                    const SizedBox(height: CustomSpacing.spacing300),
+                    _SelectOptionControl(
+                      label: '수리진행상황',
+                      options: controller.repairStatusOptions,
+                      selection: controller.selectedRepairStatus,
+                      onSelected: controller.setRepairStatusSelection,
+                    ),
+                    const SizedBox(height: CustomSpacing.spacing300),
+                    _SelectOptionControl(
+                      label: '출고진행상황',
+                      options: controller.shipmentStatusOptions,
+                      selection: controller.selectedShipmentStatus,
+                      onSelected: controller.setShipmentStatusSelection,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -545,5 +550,99 @@ class _SelectOptionControl extends StatelessWidget {
         onChanged: onSelected,
       );
     });
+  }
+}
+
+class _SheetSectionCard extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
+  final CustomColors colorTheme;
+  final CustomTypography textTheme;
+
+  const _SheetSectionCard({
+    required this.title,
+    required this.children,
+    required this.colorTheme,
+    required this.textTheme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(CustomSpacing.spacing400),
+      decoration: BoxDecoration(
+        color: colorTheme.componentsFillStandardSecondary,
+        borderRadius: BorderRadius.circular(CustomRadius.radius600),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: textTheme.label.copyWith(
+              color: colorTheme.contentStandardSecondary,
+            ),
+          ),
+          const SizedBox(height: CustomSpacing.spacing300),
+          ...children,
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickSheetWrapper extends StatelessWidget {
+  final String title;
+  final Widget child;
+  final CustomColors colorTheme;
+  final CustomTypography textTheme;
+  final VoidCallback onClose;
+
+  const _QuickSheetWrapper({
+    required this.title,
+    required this.child,
+    required this.colorTheme,
+    required this.textTheme,
+    required this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Center(
+          child: Container(
+            width: 48,
+            height: 4,
+            margin: const EdgeInsets.only(bottom: CustomSpacing.spacing400),
+            decoration: BoxDecoration(
+              color: colorTheme.lineOutline.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: textTheme.title.copyWith(
+                  color: colorTheme.contentStandardPrimary,
+                ),
+              ),
+            ),
+            IconButton(
+              onPressed: onClose,
+              icon: const Icon(Icons.close_rounded),
+            ),
+          ],
+        ),
+        const SizedBox(height: CustomSpacing.spacing200),
+        child,
+      ],
+    );
   }
 }
