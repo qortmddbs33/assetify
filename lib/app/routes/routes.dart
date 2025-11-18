@@ -6,4 +6,5 @@ class Routes {
   static const HOME = '/';
   static const ASSET_LOOKUP = '/asset-lookup';
   static const ASSET_DETAIL = '/assets/detail';
+  static const QUICK_STATUS = '/assets/quick-status';
 }

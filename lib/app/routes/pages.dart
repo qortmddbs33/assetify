@@ -8,6 +8,8 @@ import '../pages/asset_lookup/binding.dart';
 import '../pages/asset_lookup/page.dart';
 import '../pages/home/binding.dart';
 import '../pages/home/page.dart';
+import '../pages/quick_status/binding.dart';
+import '../pages/quick_status/page.dart';
 import '../pages/test/binding.dart';
 import '../pages/test/page.dart';
 import 'routes.dart';
@@ -41,6 +43,12 @@ class AppPages {
       name: Routes.ASSET_DETAIL,
       page: () => const AssetDetailPage(),
       binding: AssetDetailBinding(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: Routes.QUICK_STATUS,
+      page: () => const QuickStatusPage(),
+      binding: QuickStatusBinding(),
       transition: Transition.cupertino,
     ),
   ];

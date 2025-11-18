@@ -96,9 +96,9 @@ class _HomeMenuGrid extends StatelessWidget {
         onTap: () => Get.toNamed(Routes.ASSET_LOOKUP),
       ),
       _HomeMenuItem(
-        title: '일괄 변경',
+        title: '빠른 상태 변경',
         description: '바코드로 상태를 한 번에 변경할 수 있어요.',
-        onTap: () {},
+        onTap: () => Get.toNamed(Routes.QUICK_STATUS),
       ),
     ];
 

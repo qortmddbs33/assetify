@@ -94,6 +94,34 @@ class NotionService extends GetxController {
     }
   }
 
+  Future<List<NotionPropertyOption>> fetchPropertyOptionsByName(
+    String propertyName,
+  ) async {
+    final String? databaseId =
+        dotenv.env['PROD_DATABASE_ID'] ?? pageDatabaseFallback();
+    if (databaseId == null || databaseId.isEmpty) {
+      return [];
+    }
+    try {
+      final Map<String, NotionPropertyDefinition> schema =
+          await _getDatabaseSchema(databaseId);
+      final NotionPropertyDefinition? definition =
+          _definitionFor(schema, propertyName);
+      if (definition == null) return [];
+      return definition.options;
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
+  String? pageDatabaseFallback() {
+    if (_schemaCache.isNotEmpty) {
+      return _schemaCache.keys.first;
+    }
+    return null;
+  }
+
   Map<String, dynamic>? _buildPropertyPayload(
     NotionPropertyField field,
     String value,
