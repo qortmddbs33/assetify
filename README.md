@@ -13,7 +13,7 @@
 ## 프로젝트 개요
 - **목표**: Notion에 구축된 대웅그룹 NT/PC 자산 DB를 모바일 현장에서 빠르게 조회·수정.
 - **플랫폼**: Flutter 3.10 (Android, iOS, Web 대응), GetX 기반 상태 관리 및 라우팅.
-- **데이터 연동**: Cloudflare Workers 기반 Notion Proxy (`https://notion-proxy.sspyorea.workers.dev`)를 통해 Notion REST API 호출. 모든 호출은 `dio` 인터셉터로 인증 헤더 자동 부착.
+- **데이터 연동**: Cloudflare Workers 기반 Notion Proxy (`https://notion-proxy.idsjasan.workers.dev`)를 통해 Notion REST API 호출. 모든 호출은 `dio` 인터셉터로 인증 헤더 자동 부착.
 - **보안**: Notion Integration 키는 디바이스 내 `flutter_secure_storage`에 암호화 저장. 앱 내부에서는 로그로 노출하지 않음.
 
 ## 주요 기능
