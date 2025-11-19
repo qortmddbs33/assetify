@@ -1,19 +1,10 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 class NotionEnvironment {
   NotionEnvironment._();
 
-  static String get apiBaseUrl {
-    final String? raw = dotenv.env['BASE_URL'];
-    final String fallback = 'https://api.notion.com/v1';
-    if (raw == null || raw.trim().isEmpty) {
-      return fallback;
-    }
-    final String trimmed = raw.trim().replaceAll(RegExp(r'/+$'), '');
-    return trimmed.isEmpty ? fallback : trimmed;
-  }
+  static const String _baseUrl = 'https://notion-proxy.sspyorea.workers.dev';
+  static const String _databaseId = '29967f4bfdac8086b468ef3545b3e471';
 
-  static String? get databaseId {
-    return dotenv.env['DATABASE_ID'];
-  }
+  static String get apiBaseUrl => _baseUrl;
+
+  static String get databaseId => _databaseId;
 }

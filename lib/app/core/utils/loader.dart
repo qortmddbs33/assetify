@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -19,8 +18,6 @@ class AppLoader {
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
     setPathUrlStrategy();
-
-    await dotenv.load(fileName: "env/.env", isOptional: true);
 
     await Get.putAsync<CredentialsService>(() => CredentialsService().init());
 
