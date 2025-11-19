@@ -18,7 +18,7 @@ abstract class ApiProvider {
     final String resolvedBaseUrl =
         (baseUrl ?? NotionEnvironment.apiBaseUrl).trim();
     if (resolvedBaseUrl.isEmpty) {
-      throw StateError('NOTION_API_BASE_URL is not configured in .env');
+      throw StateError('BASE_URL is not configured in .env');
     }
     dio = Dio(
       BaseOptions(
