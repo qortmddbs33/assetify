@@ -4,18 +4,25 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
 
+import '../core/utils/notion_environment.dart';
 import '../services/credentials/service.dart';
 import 'model/response.dart';
 
 abstract class ApiProvider {
-  late Dio dio = Dio();
+  late final Dio dio;
   final CredentialsService credentialsService;
 
-  ApiProvider({CredentialsService? credentialsService})
+  ApiProvider({CredentialsService? credentialsService, String? baseUrl})
     : credentialsService =
           credentialsService ?? Get.find<CredentialsService>() {
+    final String resolvedBaseUrl =
+        (baseUrl ?? NotionEnvironment.apiBaseUrl).trim();
+    if (resolvedBaseUrl.isEmpty) {
+      throw StateError('NOTION_API_BASE_URL is not configured in .env');
+    }
     dio = Dio(
       BaseOptions(
+        baseUrl: resolvedBaseUrl,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
