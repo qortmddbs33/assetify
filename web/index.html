@@ -101,6 +101,54 @@
       document.body.style.background = "transparent";
     }
   </script>
+  <script>
+    (function enforceHighResCamera() {
+      const devices = navigator.mediaDevices;
+      if (!devices || typeof devices.getUserMedia !== 'function') {
+        return;
+      }
+
+      const originalGetUserMedia = devices.getUserMedia.bind(devices);
+
+      const ensureDimension = (constraints, key, fallback) => {
+        const currentValue = constraints[key];
+        if (currentValue == null) {
+          constraints[key] = { ideal: fallback };
+          return;
+        }
+        if (typeof currentValue === 'number') {
+          constraints[key] = { ideal: currentValue };
+          return;
+        }
+        if (typeof currentValue === 'object') {
+          const hasExplicitBound =
+            'ideal' in currentValue ||
+            'exact' in currentValue ||
+            'min' in currentValue ||
+            'max' in currentValue;
+
+          if (!hasExplicitBound) {
+            currentValue.ideal = fallback;
+          }
+        }
+      };
+
+      devices.getUserMedia = function patchedGetUserMedia(constraints) {
+        if (constraints && typeof constraints === 'object' && constraints.video) {
+          if (constraints.video === true) {
+            constraints.video = {};
+          }
+
+          if (typeof constraints.video === 'object') {
+            ensureDimension(constraints.video, 'width', 99999);
+            ensureDimension(constraints.video, 'height', 99999);
+          }
+        }
+
+        return originalGetUserMedia(constraints);
+      };
+    })();
+  </script>
 </head>
 <body>
   <picture id="splash">

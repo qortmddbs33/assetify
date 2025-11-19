@@ -1,6 +1,6 @@
+import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../core/theme/colors.dart';
 import '../../core/theme/static.dart';
@@ -14,27 +14,20 @@ class AssetLookupPage extends GetView<AssetLookupController> {
     var hasResult = false;
     final scannedValue = await Navigator.of(context).push<String>(
       MaterialPageRoute(
-        builder: (scannerContext) => Scaffold(
-          appBar: AppBar(title: const Text('바코드 스캔')),
-          body: MobileScanner(
-            onDetect: (capture) {
-              if (hasResult || capture.barcodes.isEmpty) {
-                return;
-              }
-              final rawValue = capture.barcodes
-                      .firstWhere(
-                        (barcode) => (barcode.rawValue ?? '').isNotEmpty,
-                        orElse: () => capture.barcodes.first,
-                      )
-                      .rawValue ??
-                  '';
-              if (rawValue.isEmpty) {
-                return;
-              }
-              hasResult = true;
-              Navigator.of(scannerContext).pop(rawValue);
-            },
-          ),
+        builder: (scannerContext) => AiBarcodeScanner(
+          appBarBuilder: (context, controller) =>
+              AppBar(title: const Text('바코드 스캔')),
+          onDetect: (capture) {
+            if (hasResult || capture.barcodes.isEmpty) {
+              return;
+            }
+            final rawValue = capture.barcodes.first.rawValue;
+            if (rawValue == null || rawValue.isEmpty) {
+              return;
+            }
+            hasResult = true;
+            Navigator.of(scannerContext).pop(rawValue);
+          },
         ),
       ),
     );
