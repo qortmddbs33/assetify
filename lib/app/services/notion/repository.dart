@@ -73,8 +73,8 @@ class NotionRepository {
   }
 
   String _requireDatabaseId() {
-    final String? databaseId = NotionEnvironment.databaseId;
-    if (databaseId == null || databaseId.isEmpty) {
+    final String databaseId = NotionEnvironment.databaseId;
+    if (databaseId.isEmpty) {
       throw StateError('DATABASE_ID is not configured in .env');
     }
     return databaseId;

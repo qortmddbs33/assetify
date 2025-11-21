@@ -328,14 +328,15 @@ class NotionPropertyOption {
     if (json == null) return const <NotionPropertyOption>[];
     final String? type = json['type'] as String?;
     final dynamic typeData = json[type];
-    if (typeData is! Map<String, dynamic>)
+    if (typeData is! Map<String, dynamic>) {
       return const <NotionPropertyOption>[];
+    }
     final dynamic options = typeData['options'];
     if (options is! List) return const <NotionPropertyOption>[];
     return options
         .whereType<Map>()
         .map((option) {
-          final map = Map<String, dynamic>.from(option as Map);
+          final map = Map<String, dynamic>.from(option);
           return NotionPropertyOption(
             id: map['id']?.toString() ?? '',
             name: map['name']?.toString() ?? '',

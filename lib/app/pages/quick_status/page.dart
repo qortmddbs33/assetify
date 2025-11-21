@@ -149,7 +149,7 @@ class _StatusDropdown extends StatelessWidget {
       }
       final selected = controller.selectedStatus.value;
       return DropdownButtonFormField<String>(
-        value: selected.isEmpty ? null : selected,
+        initialValue: selected.isEmpty ? null : selected,
         items: controller.statusOptions
             .map(
               (option) => DropdownMenuItem<String>(
@@ -470,7 +470,7 @@ class _DateActionDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => DropdownButtonFormField<QuickStatusDateAction>(
-        value: action.value,
+        initialValue: action.value,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
@@ -536,10 +536,10 @@ class _SelectOptionControl extends StatelessWidget {
                 child: Text(option.name),
               ),
             )
-            .toList(),
+            ,
       ];
       return DropdownButtonFormField<String?>(
-        value: current,
+        initialValue: current,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
