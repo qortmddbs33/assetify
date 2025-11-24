@@ -1,3 +1,6 @@
+/// 앱 페이지 라우트 설정
+/// GetX 라우팅 시스템의 페이지 정의
+
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
@@ -14,6 +17,8 @@ import '../pages/test/binding.dart';
 import '../pages/test/page.dart';
 import 'routes.dart';
 
+/// 앱 페이지 정의 클래스
+/// 각 라우트에 대한 페이지, 바인딩, 전환 효과 설정
 class AppPages {
   static final pages = [
     GetPage(

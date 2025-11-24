@@ -1,3 +1,6 @@
+/// 자산 조회 페이지 UI
+/// 자산번호 입력 또는 바코드 스캔으로 자산 검색
+
 import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +10,7 @@ import '../../core/theme/static.dart';
 import '../../core/theme/typography.dart';
 import 'controller.dart';
 
+/// 자산 조회 페이지 위젯
 class AssetLookupPage extends GetView<AssetLookupController> {
   const AssetLookupPage({super.key});
 

@@ -1,3 +1,6 @@
+/// 빠른 상태 변경 페이지 컨트롤러
+/// 바코드 스캔으로 자산 상태를 일괄 변경
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -5,6 +8,8 @@ import 'package:intl/intl.dart';
 import '../../services/notion/model.dart';
 import '../../services/notion/service.dart';
 
+/// 빠른 상태 변경 컨트롤러
+/// 연속 스캔 모드, 상태/날짜 옵션 설정 기능 포함
 class QuickStatusController extends GetxController {
   QuickStatusController();
 
@@ -283,6 +288,7 @@ class QuickStatusController extends GetxController {
   }
 }
 
+/// 상태 변경 결과 모델
 class QuickStatusResult {
   final String assetNumber;
   final String status;
@@ -298,4 +304,5 @@ class QuickStatusResult {
   }) : timestamp = DateTime.now();
 }
 
+/// 날짜 필드 액션 열거형
 enum QuickStatusDateAction { none, setToday, clear }

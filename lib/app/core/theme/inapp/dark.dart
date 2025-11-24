@@ -1,3 +1,6 @@
+/// Flutter ThemeData로 변환된 다크 테마
+/// 앱 전체에 적용되는 Material 테마 설정
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -5,6 +8,8 @@ import '../dark.dart';
 
 final CustomDarkTheme _darkTheme = CustomDarkTheme();
 
+/// Material ThemeData 형태의 다크 테마
+/// GetMaterialApp의 darkTheme 속성에 적용
 ThemeData darkThemeData = ThemeData(
   brightness: Brightness.dark,
   fontFamily: 'WantedSans',

@@ -1,3 +1,6 @@
+/// 자산 조회 페이지 컨트롤러
+/// 자산번호로 검색하여 상세 페이지로 이동
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -5,6 +8,7 @@ import '../../routes/routes.dart';
 import '../../services/notion/model.dart';
 import '../../services/notion/service.dart';
 
+/// 자산 조회 컨트롤러
 class AssetLookupController extends GetxController {
   AssetLookupController();
 
@@ -23,6 +27,7 @@ class AssetLookupController extends GetxController {
     super.onClose();
   }
 
+  /// 자산번호로 자산 검색
   Future<void> searchAsset() async {
     final assetNumber = assetNumberController.text.trim();
     if (assetNumber.isEmpty) {

@@ -1,6 +1,11 @@
+/// Notion API 응답에서 속성 값을 파싱하는 유틸리티
+/// 다양한 Notion 속성 타입을 문자열로 변환
+
 class NotionPropertyParser {
   const NotionPropertyParser._();
 
+  /// Notion 속성을 일반 문자열로 변환
+  /// title, rich_text, select, status, multi_select, number, date 등 지원
   static String asPlainString(dynamic property) {
     final Map<String, dynamic>? data = _asMap(property);
     if (data == null) return '';
@@ -56,6 +61,7 @@ class NotionPropertyParser {
     }
   }
 
+  /// 동적 타입을 Map으로 변환
   static Map<String, dynamic>? _asMap(dynamic source) {
     if (source == null) return null;
     if (source is Map<String, dynamic>) return source;
@@ -63,6 +69,7 @@ class NotionPropertyParser {
     return null;
   }
 
+  /// rich_text 배열에서 plain_text 추출
   static String _plainTextFromList(dynamic raw) {
     if (raw is! List) return '';
     return raw
@@ -85,12 +92,14 @@ class NotionPropertyParser {
         .join('');
   }
 
+  /// select/status 타입에서 name 추출
   static String _nameFromMap(dynamic raw) {
     final map = _asMap(raw);
     final name = map?['name'];
     return name is String ? name : '';
   }
 
+  /// multi_select/people 타입에서 이름 목록 추출
   static String _namesFromList(dynamic raw) {
     if (raw is! List) return '';
     return raw
@@ -99,6 +108,7 @@ class NotionPropertyParser {
         .join(', ');
   }
 
+  /// files 타입에서 파일명 또는 URL 추출
   static String _fileNamesFromList(dynamic raw) {
     if (raw is! List) return '';
     return raw

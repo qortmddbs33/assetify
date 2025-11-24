@@ -1,5 +1,10 @@
+/// 앱 전체에서 사용하는 타이포그래피 정의
+/// 폰트 가중치와 텍스트 스타일을 일관되게 관리
+
 import 'package:flutter/material.dart';
 
+/// 텍스트 스타일 생성 헬퍼 함수
+/// 가중치, 크기, 높이, 색상 등을 받아 TextStyle 반환
 TextStyle style(FontWeight weight, double size, double height, Color color,
         {bool underlined = false, double spacing = 0}) =>
     TextStyle(
@@ -13,6 +18,7 @@ TextStyle style(FontWeight weight, double size, double height, Color color,
       decorationColor: color,
     );
 
+/// 폰트 가중치 상수 정의
 abstract class Weight {
   static const thin = FontWeight.w100;
   static const extraLight = FontWeight.w200;
@@ -25,8 +31,10 @@ abstract class Weight {
   static const heavy = FontWeight.w900;
 }
 
+/// 커스텀 타이포그래피 테마 확장 클래스
+/// display, title, heading, body, label, footnote, caption 스타일 정의
 class CustomTypography extends ThemeExtension<CustomTypography> {
-  final Color defaultColor;
+  final Color defaultColor; // 기본 텍스트 색상
 
   CustomTypography({
     required this.defaultColor,

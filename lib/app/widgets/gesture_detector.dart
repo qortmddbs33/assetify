@@ -1,6 +1,10 @@
+/// 커스텀 제스처 디텍터 위젯 모음
+/// 탭 시 다양한 시각적 피드백을 제공하는 위젯
+
 import 'package:assetify/app/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 
+/// 탭 시 채우기 색상 효과를 제공하는 제스처 디텍터
 class CustomGestureDetectorWithFillInteraction extends StatefulWidget {
   final void Function()? onTap;
   final void Function()? onLongPress;
@@ -84,6 +88,7 @@ class _CustomGestureDetectorWithFillInteractionState
   }
 }
 
+/// 탭 시 투명도 변화 효과를 제공하는 제스처 디텍터
 class CustomGestureDetectorWithOpacityInteraction extends StatefulWidget {
   final void Function()? onTap;
   final void Function()? onLongPress;
@@ -148,6 +153,7 @@ class _CustomGestureDetectorWithOpacityInteractionState
   }
 }
 
+/// 탭 시 크기 축소 효과를 제공하는 제스처 디텍터
 class CustomGestureDetectorWithScaleInteraction extends StatefulWidget {
   final void Function()? onTap;
   final void Function()? onLongPress;

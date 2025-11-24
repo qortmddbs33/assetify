@@ -1,3 +1,6 @@
+/// Notion API 데이터 접근 레이어
+/// API 호출과 데이터 변환을 담당
+
 import 'package:get/get.dart';
 
 import '../../core/utils/notion_environment.dart';
@@ -5,11 +8,14 @@ import '../../provider/api_interface.dart';
 import '../../provider/model/response.dart';
 import 'model.dart';
 
+/// Notion 데이터 레포지토리
+/// 데이터베이스 쿼리, 페이지 조회/수정 등 API 호출 담당
 class NotionRepository {
   final ApiProvider api;
 
   NotionRepository({ApiProvider? api}) : api = api ?? Get.find<ApiProvider>();
 
+  /// 데이터베이스에서 자산 목록 조회
   Future<NotionDatabase> fetchNotionItems({
     String? assetNumber,
   }) async {
@@ -30,6 +36,7 @@ class NotionRepository {
     return NotionDatabase.fromJson(response.data);
   }
 
+  /// 페이지 ID로 단일 페이지 조회
   Future<NotionPage> fetchPageById(String pageId) async {
     assert(pageId.isNotEmpty, 'pageId must not be empty');
     CustomHttpResponse response = await api.get('/pages/$pageId');
@@ -39,6 +46,7 @@ class NotionRepository {
     return NotionPage.fromJson(data);
   }
 
+  /// 페이지 속성 업데이트
   Future<NotionPage> updatePage({
     required String pageId,
     required Map<String, dynamic> properties,
@@ -56,6 +64,7 @@ class NotionRepository {
     return NotionPage.fromJson(data);
   }
 
+  /// 데이터베이스 스키마(속성 정의) 조회
   Future<Map<String, NotionPropertyDefinition>> fetchDatabaseSchema(
       String databaseId) async {
     assert(databaseId.isNotEmpty, 'databaseId must not be empty');

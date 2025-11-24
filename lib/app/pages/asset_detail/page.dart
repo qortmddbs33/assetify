@@ -1,3 +1,6 @@
+/// 자산 상세 페이지 UI
+/// 자산의 모든 속성을 표시하고 수정 기능 제공
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -9,6 +12,7 @@ import '../../services/notion/model.dart';
 import '../../widgets/standard_bottom_sheet.dart';
 import 'controller.dart';
 
+/// 자산 상세 페이지 위젯
 class AssetDetailPage extends GetView<AssetDetailController> {
   const AssetDetailPage({super.key});
 

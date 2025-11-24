@@ -1,3 +1,6 @@
+/// 빠른 상태 변경 페이지 UI
+/// 바코드 스캔으로 자산 상태를 빠르게 변경
+
 import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +11,7 @@ import '../../core/theme/typography.dart';
 import '../../services/notion/model.dart';
 import 'controller.dart';
 
+/// 빠른 상태 변경 페이지 위젯
 class QuickStatusPage extends GetView<QuickStatusController> {
   const QuickStatusPage({super.key});
 

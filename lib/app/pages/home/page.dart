@@ -1,3 +1,6 @@
+/// 홈 페이지 UI
+/// 앱 메인 화면으로 API 키 설정과 주요 기능 메뉴 제공
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +12,7 @@ import '../../widgets/gesture_detector.dart';
 import '../../widgets/standard_bottom_sheet.dart';
 import 'controller.dart';
 
+/// 홈 페이지 위젯
 class HomePage extends GetView<HomePageController> {
   const HomePage({super.key});
 

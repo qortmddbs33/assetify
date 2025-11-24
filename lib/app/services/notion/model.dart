@@ -1,9 +1,13 @@
+/// Notion API 데이터 모델 정의
+/// 데이터베이스, 페이지, 속성 등의 모델 클래스
+
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../core/utils/property_parser.dart';
 
 part 'model.g.dart';
 
+/// Notion 데이터베이스 응답 모델
 @JsonSerializable()
 class NotionDatabase {
   final List<NotionPage> results;
@@ -16,6 +20,7 @@ class NotionDatabase {
   Map<String, dynamic> toJson() => _$NotionDatabaseToJson(this);
 }
 
+/// Notion 페이지(자산) 모델
 @JsonSerializable()
 class NotionPage {
   final String id;
@@ -52,6 +57,8 @@ class NotionPage {
       value.replaceAll(RegExp(r'\s+'), '');
 }
 
+/// 자산 속성 모델
+/// Notion 데이터베이스의 각 속성을 문자열로 변환하여 저장
 class NotionProperties {
   final String user;
   final String assetNumber;
@@ -178,6 +185,8 @@ class NotionProperties {
   };
 }
 
+/// Notion 속성 필드 모델
+/// 속성의 타입과 원본 데이터를 포함
 class NotionPropertyField {
   final String name;
   final String type;
@@ -265,6 +274,8 @@ class NotionPropertyField {
   }
 }
 
+/// Notion 속성 정의 모델
+/// 데이터베이스 스키마에서 속성의 타입과 옵션을 정의
 class NotionPropertyDefinition {
   final String name;
   final String type;
@@ -311,6 +322,8 @@ class NotionPropertyDefinition {
   String get normalizedName => name.replaceAll(RegExp(r'\s+'), '');
 }
 
+/// Notion 속성 옵션 모델
+/// select, status 타입의 선택 가능한 옵션
 class NotionPropertyOption {
   final String id;
   final String name;

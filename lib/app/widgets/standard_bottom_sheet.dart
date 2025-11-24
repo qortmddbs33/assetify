@@ -1,9 +1,13 @@
+/// 표준 바텀 시트 위젯 모음
+/// 일관된 스타일의 바텀 시트 UI 컴포넌트
+
 import 'package:flutter/material.dart';
 
 import '../core/theme/colors.dart';
 import '../core/theme/static.dart';
 import '../core/theme/typography.dart';
 
+/// 바텀 시트 빌더 함수 타입 정의
 typedef StandardBottomSheetBuilder =
     Widget Function(
       BuildContext sheetContext,
@@ -11,6 +15,7 @@ typedef StandardBottomSheetBuilder =
       CustomTypography textTheme,
     );
 
+/// 표준 바텀 시트 표시 함수
 Future<T?> showStandardBottomSheet<T>(
   BuildContext context,
   StandardBottomSheetBuilder builder,
@@ -46,6 +51,8 @@ Future<T?> showStandardBottomSheet<T>(
   );
 }
 
+/// 바텀 시트 콘텐츠 래퍼
+/// 제목, 닫기 버튼, 드래그 핸들 포함
 class StandardSheetContentWrapper extends StatelessWidget {
   final String title;
   final Widget child;
@@ -104,6 +111,7 @@ class StandardSheetContentWrapper extends StatelessWidget {
   }
 }
 
+/// 바텀 시트 내부 카드
 class StandardSheetCard extends StatelessWidget {
   final Widget child;
   final CustomColors colorTheme;
@@ -128,6 +136,7 @@ class StandardSheetCard extends StatelessWidget {
   }
 }
 
+/// 바텀 시트 리스트 타일
 class StandardSheetListTile extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -159,6 +168,7 @@ class StandardSheetListTile extends StatelessWidget {
   }
 }
 
+/// 바텀 시트 액션 버튼
 class StandardSheetActionButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;

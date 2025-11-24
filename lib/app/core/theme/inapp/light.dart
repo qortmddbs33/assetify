@@ -1,3 +1,6 @@
+/// Flutter ThemeData로 변환된 라이트 테마
+/// 앱 전체에 적용되는 Material 테마 설정
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +9,8 @@ import '../light.dart';
 
 final CustomLightTheme _lightTheme = CustomLightTheme();
 
+/// Material ThemeData 형태의 라이트 테마
+/// GetMaterialApp의 theme 속성에 적용
 final ThemeData lightThemeData = ThemeData(
   fontFamily: 'WantedSans',
   brightness: Brightness.light,

@@ -1,6 +1,11 @@
+/// 사용자 인증 정보 관리 서비스
+/// Notion API 키를 안전하게 저장하고 관리
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
+/// 인증 정보 서비스
+/// 보안 저장소를 사용하여 API 키를 암호화 저장
 class CredentialsService extends GetxService {
   static const String _notionKeyStorageKey = 'notion_api_key';
 
@@ -12,6 +17,7 @@ class CredentialsService extends GetxService {
 
   String? get notionApiKey => _cachedNotionApiKey.value;
 
+  /// 서비스 초기화 - 저장된 API 키 로드
   Future<CredentialsService> init() async {
     final String? stored = await storage.read(key: _notionKeyStorageKey);
     _cachedNotionApiKey.value = stored != null && stored.isNotEmpty
@@ -20,6 +26,7 @@ class CredentialsService extends GetxService {
     return this;
   }
 
+  /// API 키 저장
   Future<void> saveNotionApiKey(String key) async {
     final String trimmed = key.trim();
     if (trimmed.isEmpty) {
@@ -31,6 +38,7 @@ class CredentialsService extends GetxService {
     _cachedNotionApiKey.value = trimmed;
   }
 
+  /// API 키 삭제
   Future<void> clearNotionApiKey() async {
     await storage.delete(key: _notionKeyStorageKey);
     _cachedNotionApiKey.value = null;

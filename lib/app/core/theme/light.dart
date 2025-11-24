@@ -1,9 +1,13 @@
+/// 라이트 테마 색상 및 스타일 정의
+
 import 'package:flutter/material.dart';
 
 import 'colors.dart';
 import 'theme.dart';
 import 'typography.dart';
 
+/// 라이트 모드 색상 정의
+/// 밝은 배경에 어두운 텍스트 색상 사용
 class CustomLightThemeColors extends CustomColors {
   CustomLightThemeColors()
     : super(
@@ -70,11 +74,13 @@ class CustomLightThemeColors extends CustomColors {
       );
 }
 
+/// 라이트 모드 타이포그래피
 class DanALightThemeTypography extends CustomTypography {
   DanALightThemeTypography()
     : super(defaultColor: CustomLightThemeColors().contentStandardPrimary);
 }
 
+/// 라이트 테마 전체 구성
 class CustomLightTheme extends CustomTheme {
   CustomLightTheme()
     : super(

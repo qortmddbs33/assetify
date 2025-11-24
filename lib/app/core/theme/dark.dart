@@ -1,9 +1,13 @@
+/// 다크 테마 색상 및 스타일 정의
+
 import 'package:flutter/material.dart';
 
 import 'colors.dart';
 import 'theme.dart';
 import 'typography.dart';
 
+/// 다크 모드 색상 정의
+/// 어두운 배경에 밝은 텍스트 색상 사용
 class CustomDarkThemeColors extends CustomColors {
   CustomDarkThemeColors()
       : super(
@@ -70,11 +74,13 @@ class CustomDarkThemeColors extends CustomColors {
   );
 }
 
+/// 다크 모드 타이포그래피
 class CustomDarkThemeTypography extends CustomTypography {
   CustomDarkThemeTypography()
       : super(defaultColor: CustomDarkThemeColors().contentStandardPrimary);
 }
 
+/// 다크 테마 전체 구성
 class CustomDarkTheme extends CustomTheme {
   CustomDarkTheme()
       : super(

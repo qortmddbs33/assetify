@@ -1,3 +1,6 @@
+/// Notion API 비즈니스 로직 서비스
+/// 자산 조회, 수정, 속성 옵션 조회 등 담당
+
 import 'dart:developer';
 
 import 'package:get/get.dart';
@@ -6,6 +9,8 @@ import '../../core/utils/notion_environment.dart';
 import 'model.dart';
 import 'repository.dart';
 
+/// Notion 서비스 컨트롤러
+/// Repository를 통해 Notion API와 통신하고 비즈니스 로직 처리
 class NotionService extends GetxController {
   final NotionRepository repository;
   final Map<String, Map<String, NotionPropertyDefinition>> _schemaCache = {};
@@ -13,6 +18,7 @@ class NotionService extends GetxController {
   NotionService({NotionRepository? repository})
     : repository = repository ?? NotionRepository();
 
+  /// 자산번호로 자산 조회
   Future<NotionPage?> fetchAssetByNumber(String assetNumber) async {
     try {
       final NotionDatabase data = await repository.fetchNotionItems(
@@ -28,6 +34,7 @@ class NotionService extends GetxController {
     }
   }
 
+  /// 페이지 ID로 자산 조회
   Future<NotionPage?> fetchAssetById(String pageId) async {
     try {
       return await repository.fetchPageById(pageId);
@@ -37,6 +44,7 @@ class NotionService extends GetxController {
     }
   }
 
+  /// 자산 속성 업데이트
   Future<NotionPage?> updateAssetProperties({
     required NotionPage page,
     required Map<String, String> updates,
@@ -71,6 +79,7 @@ class NotionService extends GetxController {
     }
   }
 
+  /// 속성의 선택 가능한 옵션 목록 조회
   Future<List<NotionPropertyOption>> fetchPropertyOptions(
     NotionPage page,
     String propertyName,
@@ -125,6 +134,7 @@ class NotionService extends GetxController {
     return null;
   }
 
+  /// Notion API 형식의 속성 페이로드 생성
   Map<String, dynamic>? _buildPropertyPayload(
     NotionPropertyField field,
     String value,

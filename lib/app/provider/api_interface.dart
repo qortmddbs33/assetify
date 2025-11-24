@@ -1,3 +1,6 @@
+/// HTTP API 클라이언트 인터페이스
+/// Dio를 사용한 REST API 통신 추상 클래스
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -8,6 +11,8 @@ import '../core/utils/notion_environment.dart';
 import '../services/credentials/service.dart';
 import 'model/response.dart';
 
+/// API 프로바이더 추상 클래스
+/// Notion API와의 통신을 담당
 abstract class ApiProvider {
   late final Dio dio;
   final CredentialsService credentialsService;
@@ -52,6 +57,7 @@ abstract class ApiProvider {
     );
   }
 
+  /// GET 요청 수행
   Future<CustomHttpResponse> get(
     String path, {
     Map<String, dynamic>? queryParameters,
@@ -65,6 +71,7 @@ abstract class ApiProvider {
     return CustomHttpResponse.fromDioResponse(dioResponse);
   }
 
+  /// 스트림 GET 요청 (SSE 지원)
   Future<Stream<Map<String, dynamic>>> getStream(String path) async {
     Response<ResponseBody> dioResponse = await dio.get(
       path,
@@ -89,6 +96,7 @@ abstract class ApiProvider {
     );
   }
 
+  /// DELETE 요청 수행
   Future<CustomHttpResponse> delete(
     String path, {
     dynamic data,
@@ -98,6 +106,7 @@ abstract class ApiProvider {
     return CustomHttpResponse.fromDioResponse(dioResponse);
   }
 
+  /// POST 요청 수행
   Future<CustomHttpResponse> post(
     String path, {
     dynamic data,
@@ -113,6 +122,7 @@ abstract class ApiProvider {
     return CustomHttpResponse.fromDioResponse(dioResponse);
   }
 
+  /// PATCH 요청 수행
   Future<CustomHttpResponse> patch(
     String path, {
     dynamic data,
@@ -122,6 +132,7 @@ abstract class ApiProvider {
     return CustomHttpResponse.fromDioResponse(dioResponse);
   }
 
+  /// PUT 요청 수행
   Future<CustomHttpResponse> put(
     String path, {
     dynamic data,

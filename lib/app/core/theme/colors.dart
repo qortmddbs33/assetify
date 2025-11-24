@@ -1,6 +1,12 @@
+/// 앱 전체에서 사용하는 커스텀 색상 정의
+/// ThemeExtension을 상속하여 테마 시스템과 통합
+
 import 'package:flutter/material.dart';
 
+/// 커스텀 색상 테마 확장 클래스
+/// 기본 색상, 배경색, 텍스트 색상, 컴포넌트 색상 등을 정의
 class CustomColors extends ThemeExtension<CustomColors> {
+  // 기본 단색 (Solid Colors)
   final Color solidRed;
   final Color solidOrange;
   final Color solidYellow;
@@ -13,6 +19,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
   final Color solidBlack;
   final Color solidWhite;
 
+  // 반투명 색상 (Translucent Colors)
   final Color solidTranslucentRed;
   final Color solidTranslucentOrange;
   final Color solidTranslucentYellow;
@@ -25,11 +32,13 @@ class CustomColors extends ThemeExtension<CustomColors> {
   final Color solidTranslucentBlack;
   final Color solidTranslucentWhite;
 
+  // 배경색 (Background Colors)
   final Color backgroundStandardPrimary;
   final Color backgroundStandardSecondary;
   final Color backgroundInvertedPrimary;
   final Color backgroundInvertedSecondary;
 
+  // 콘텐츠/텍스트 색상 (Content Colors)
   final Color contentStandardPrimary;
   final Color contentStandardSecondary;
   final Color contentStandardTertiary;
@@ -40,9 +49,11 @@ class CustomColors extends ThemeExtension<CustomColors> {
   final Color contentInvertedTertiary;
   final Color contentInvertedQuaternary;
 
+  // 선/구분선 색상 (Line Colors)
   final Color lineDivider;
   final Color lineOutline;
 
+  // 컴포넌트 채우기 색상 (Component Fill Colors)
   final Color componentsFillStandardPrimary;
   final Color componentsFillStandardSecondary;
   final Color componentsFillStandardTertiary;
@@ -51,6 +62,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
   final Color componentsFillInvertedSecondary;
   final Color componentsFillInvertedTertiary;
 
+  // 인터랙션 색상 (Interactive Colors)
   final Color componentsInteractiveHover;
   final Color componentsInteractiveFocused;
   final Color componentsInteractivePressed;
@@ -59,6 +71,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
   final Color componentsTranslucentSecondary;
   final Color componentsTranslucentTertiary;
 
+  // 핵심 색상 (Core Colors)
   final Color coreAccent;
   final Color coreAccentTranslucent;
 
@@ -66,6 +79,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
   final Color coreStatusWarning;
   final Color coreStatusNegative;
 
+  // 코드 구문 강조 색상 (Syntax Highlighting Colors)
   final Color syntaxComment;
   final Color syntaxFunction;
   final Color syntaxVariable;
@@ -137,6 +151,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
     required this.syntaxKeyword,
   });
 
+  /// 특정 색상만 변경한 새 인스턴스 생성
   @override
   ThemeExtension<CustomColors> copyWith({
     Color? solidRed,
@@ -264,6 +279,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
     );
   }
 
+  /// 테마 전환 시 색상 보간 처리
   @override
   ThemeExtension<CustomColors> lerp(ThemeExtension<CustomColors>? other, double t) {
     if (other is! CustomColors) {

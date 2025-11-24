@@ -1,3 +1,8 @@
+/// 앱 전체에서 사용하는 정적 디자인 토큰 정의
+/// 간격과 모서리 반경 값을 일관되게 관리
+
+/// 간격 값 정의 클래스
+/// 컴포넌트 간 간격, 패딩 등에 사용
 class CustomSpacing {
   static const double spacing50 = 2.0;
   static const double spacing100 = 4.0;
@@ -17,6 +22,8 @@ class CustomSpacing {
   static const double spacing1000 = 80.0;
 }
 
+/// 모서리 반경 값 정의 클래스
+/// 버튼, 카드 등의 둥근 모서리에 사용
 class CustomRadius {
   static const double radius100 = 4.0;
   static const double radius200 = 6.0;
