@@ -15,7 +15,6 @@ void main() async {
       title: 'Assetify',
       debugShowCheckedModeBanner: false,
       theme: lightThemeData,
-      darkTheme: darkThemeData,
       initialRoute: kReleaseMode ? Routes.HOME : Routes.TEST,
       getPages: AppPages.pages,
     ),
