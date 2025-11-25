@@ -1,5 +1,6 @@
 /// 홈 페이지 컨트롤러
 /// API 키 관리 및 페이지 네비게이션 처리
+library;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

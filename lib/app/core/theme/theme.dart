@@ -1,4 +1,5 @@
 /// 커스텀 테마를 구성하는 기본 클래스
+library;
 
 import 'colors.dart';
 import 'typography.dart';

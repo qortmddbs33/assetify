@@ -1,5 +1,6 @@
 /// Notion API 비즈니스 로직 서비스
 /// 자산 조회, 수정, 속성 옵션 조회 등 담당
+library;
 
 import 'dart:developer';
 

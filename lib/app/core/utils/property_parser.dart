@@ -1,5 +1,6 @@
 /// Notion API 응답에서 속성 값을 파싱하는 유틸리티
 /// 다양한 Notion 속성 타입을 문자열로 변환
+library;
 
 class NotionPropertyParser {
   const NotionPropertyParser._();

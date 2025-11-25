@@ -1,5 +1,6 @@
 /// 앱 전체에서 사용하는 커스텀 색상 정의
 /// ThemeExtension을 상속하여 테마 시스템과 통합
+library;
 
 import 'package:flutter/material.dart';
 

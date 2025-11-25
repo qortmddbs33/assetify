@@ -1,5 +1,6 @@
 /// 커스텀 제스처 디텍터 위젯 모음
 /// 탭 시 다양한 시각적 피드백을 제공하는 위젯
+library;
 
 import 'package:assetify/app/core/theme/colors.dart';
 import 'package:flutter/material.dart';

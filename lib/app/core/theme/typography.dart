@@ -1,5 +1,6 @@
 /// 앱 전체에서 사용하는 타이포그래피 정의
 /// 폰트 가중치와 텍스트 스타일을 일관되게 관리
+library;
 
 import 'package:flutter/material.dart';
 

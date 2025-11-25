@@ -1,5 +1,6 @@
 /// 자산 상세 페이지 UI
 /// 자산의 모든 속성을 표시하고 수정 기능 제공
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

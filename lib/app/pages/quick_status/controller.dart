@@ -1,5 +1,6 @@
 /// 빠른 상태 변경 페이지 컨트롤러
 /// 바코드 스캔으로 자산 상태를 일괄 변경
+library;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

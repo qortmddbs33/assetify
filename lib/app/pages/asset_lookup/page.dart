@@ -1,5 +1,6 @@
 /// 자산 조회 페이지 UI
 /// 자산번호 입력 또는 바코드 스캔으로 자산 검색
+library;
 
 import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,11 @@ class AssetLookupPage extends GetView<AssetLookupController> {
         builder: (scannerContext) => AiBarcodeScanner(
           appBarBuilder: (context, controller) =>
               AppBar(title: const Text('바코드 스캔')),
+          canPop: false,
+          onDispose: () {},
+          controller: MobileScannerController(
+            formats: [BarcodeFormat.code128],
+          ),
           onDetect: (capture) {
             if (hasResult || capture.barcodes.isEmpty) {
               return;

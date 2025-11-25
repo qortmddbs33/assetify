@@ -1,5 +1,6 @@
 /// Notion API 데이터 접근 레이어
 /// API 호출과 데이터 변환을 담당
+library;
 
 import 'package:get/get.dart';
 

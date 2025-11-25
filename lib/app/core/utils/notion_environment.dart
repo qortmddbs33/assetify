@@ -1,5 +1,6 @@
 /// Notion API 환경 설정
 /// API 엔드포인트와 데이터베이스 ID 관리
+library;
 
 class NotionEnvironment {
   NotionEnvironment._();

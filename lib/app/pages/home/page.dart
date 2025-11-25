@@ -1,5 +1,6 @@
 /// 홈 페이지 UI
 /// 앱 메인 화면으로 API 키 설정과 주요 기능 메뉴 제공
+library;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

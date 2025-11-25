@@ -1,5 +1,6 @@
 /// 표준 바텀 시트 위젯 모음
 /// 일관된 스타일의 바텀 시트 UI 컴포넌트
+library;
 
 import 'package:flutter/material.dart';
 

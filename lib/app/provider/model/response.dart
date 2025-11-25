@@ -1,5 +1,6 @@
 /// HTTP 응답 모델
 /// Dio 응답을 래핑한 커스텀 응답 클래스
+library;
 
 import 'package:dio/dio.dart';
 

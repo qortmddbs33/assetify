@@ -1,5 +1,6 @@
 /// 자산 상세 페이지 컨트롤러
 /// 자산 속성 조회, 수정, 새로고침 기능
+library;
 
 import 'package:get/get.dart';
 

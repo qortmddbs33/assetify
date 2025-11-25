@@ -1,5 +1,6 @@
 /// 자산 조회 페이지 컨트롤러
 /// 자산번호로 검색하여 상세 페이지로 이동
+library;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,5 +1,6 @@
 /// 앱 페이지 라우트 설정
 /// GetX 라우팅 시스템의 페이지 정의
+library;
 
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';

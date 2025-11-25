@@ -1,4 +1,5 @@
 /// 앱 라우트 경로 상수 정의
+library;
 
 // ignore_for_file: constant_identifier_names
 

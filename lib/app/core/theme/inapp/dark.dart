@@ -1,5 +1,6 @@
 /// Flutter ThemeData로 변환된 다크 테마
 /// 앱 전체에 적용되는 Material 테마 설정
+library;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

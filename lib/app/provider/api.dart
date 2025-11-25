@@ -1,5 +1,6 @@
 /// 프로덕션용 API 프로바이더
 /// 로그 인터셉터가 추가된 API 클라이언트
+library;
 
 import 'api_interface.dart';
 import 'interceptors/log.dart';

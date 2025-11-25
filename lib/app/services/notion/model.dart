@@ -1,5 +1,6 @@
 /// Notion API 데이터 모델 정의
 /// 데이터베이스, 페이지, 속성 등의 모델 클래스
+library;
 
 import 'package:json_annotation/json_annotation.dart';
 

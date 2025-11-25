@@ -1,5 +1,6 @@
 /// Assetify 앱의 메인 진입점
 /// Notion 기반 자산 관리 시스템의 Flutter 클라이언트
+library;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

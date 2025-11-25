@@ -1,5 +1,6 @@
 /// 사용자 인증 정보 관리 서비스
 /// Notion API 키를 안전하게 저장하고 관리
+library;
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';

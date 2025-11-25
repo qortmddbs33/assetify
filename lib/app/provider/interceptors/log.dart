@@ -1,5 +1,6 @@
 /// HTTP 요청/응답 로깅 인터셉터
 /// 디버깅용 네트워크 로그 출력
+library;
 
 import 'package:dio/dio.dart';
 import 'dart:developer' as dev;

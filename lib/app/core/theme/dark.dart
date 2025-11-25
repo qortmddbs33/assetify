@@ -1,4 +1,5 @@
 /// 다크 테마 색상 및 스타일 정의
+library;
 
 import 'package:flutter/material.dart';
 

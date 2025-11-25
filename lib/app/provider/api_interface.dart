@@ -1,5 +1,6 @@
 /// HTTP API 클라이언트 인터페이스
 /// Dio를 사용한 REST API 통신 추상 클래스
+library;
 
 import 'dart:async';
 import 'dart:convert';
