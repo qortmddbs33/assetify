@@ -22,7 +22,6 @@ class AssetLookupPage extends GetView<AssetLookupController> {
         builder: (scannerContext) => AiBarcodeScanner(
           appBarBuilder: (context, controller) =>
               AppBar(title: const Text('바코드 스캔')),
-          canPop: false,
           onDispose: () {},
           controller: MobileScannerController(
             formats: [BarcodeFormat.code128],

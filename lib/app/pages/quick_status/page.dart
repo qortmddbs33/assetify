@@ -24,7 +24,6 @@ class QuickStatusPage extends GetView<QuickStatusController> {
           builder: (scannerContext) => AiBarcodeScanner(
             appBarBuilder: (context, scannerController) =>
                 AppBar(title: const Text('바코드 스캔')),
-            canPop: false,
             onDispose: () {},
             controller: MobileScannerController(
               formats: [BarcodeFormat.code128],
